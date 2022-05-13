@@ -6,7 +6,6 @@ from flask import jsonify
 from flask import Flask, request
 from flask_cors import CORS
 import json
-# from face_rec import FaceRec
 from PIL import Image
 import base64
 import numpy as np
