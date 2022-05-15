@@ -6,6 +6,7 @@ from flask import jsonify
 from flask import Flask, request
 from flask_cors import CORS
 import json
+# from face_rec import FaceRec
 from PIL import Image
 import base64
 import numpy as np
@@ -62,6 +63,14 @@ class Attendance(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.id
 
+class Status(db.Model):
+
+    id = db.Column(db.Integer, primary_key=True)
+    empno = db.Column(db.String(200), nullable=False)
+    emp_curr_status = db.Column(db.String(5), nullable=False)
+    
+    def __repr__(self):
+        return '<Task %r>' % self.id
 
 
 
@@ -318,11 +327,17 @@ def clickTrainingImg():
 
 @app.route('/markAttendance', methods=['POST', 'GET'])
 def markAttendance():
+
+
+
         data = request.get_json()
         x = data['image'].split(",")[1]
         empIden= data['empno']
         empIden = empIden[1:len(empIden)-1]
+    
         print("empIden ::::: ", empIden)
+
+
         img_data = x 
 
         img_data = img_data.encode("ascii")
@@ -333,6 +348,53 @@ def markAttendance():
         
         with open("imageToSave.png", "wb") as fh:
             fh.write(base64.decodebytes(img_data))
+
+
+        sqliteConnection = sqlite3.connect('test.db')
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+
+        sqlite_select_query = """SELECT * from Status where empno=? """
+        cursor.execute(sqlite_select_query,(empIden,))
+        
+        records = cursor.fetchall()
+        print("-->", records)
+        cursor.close()
+
+        if(len(records) == 0) :
+            new_user = Status(empno = empIden, emp_curr_status='in')
+            db.session.add(new_user)
+            db.session.commit()
+             
+        else :
+
+
+            sqliteConnection = sqlite3.connect('test.db')
+            cursor = sqliteConnection.cursor()
+            print("Connected to SQLite")
+
+
+
+            sqlite_select_query = """SELECT * from Status where empno=? """
+            cursor.execute(sqlite_select_query,(empIden,))
+            
+            records = cursor.fetchall()
+            print("-->", records)
+
+            cursor.close()
+
+            if(records[0][2] == 'in' ):
+                return jsonify({'login':'2'})
+            
+            else :
+                pass
+            
+
+
+
+
+
+
 
 
             
@@ -390,7 +452,6 @@ def markAttendance():
             cursor = sqliteConnection.cursor()
             print("Connected to SQLite")
 
-            x = data['empno']
 
 
             sqlite_select_query = """SELECT * from Attendance where empno=? """
@@ -423,6 +484,16 @@ def markAttendance():
                 print("Record Updated successfully")
                 cursor.close()
 
+                sqliteConnection = sqlite3.connect('test.db')
+                cursor = sqliteConnection.cursor()
+                print("Connected to SQLite")
+
+                sql_update_query = """Update Status set emp_curr_status = ? where empno = ?"""
+                data = ('in' , empIden)
+                cursor.execute(sql_update_query, data)
+                sqliteConnection.commit()
+                print("Record Updated successfully")
+                cursor.close()
 
             return jsonify({'login':'1'})
         
@@ -430,6 +501,169 @@ def markAttendance():
             return jsonify({'login':'0'})
 
         
+@app.route('/markAttendanceOut', methods=['POST', 'GET'])
+def markAttendanceOut():
+
+        data = request.get_json()
+        x = data['image'].split(",")[1]
+        empIden= data['empno']
+        empIden = empIden[1:len(empIden)-1]
+        print("empIden ::::: ", empIden)
+
+        img_data = x
+    
+        img_data = img_data.encode("ascii")
+
+
+        # print("****",img_data)
+
+        
+        with open("imageToSave.png", "wb") as fh:
+            fh.write(base64.decodebytes(img_data))
+        
+        sqliteConnection = sqlite3.connect('test.db')
+        cursor = sqliteConnection.cursor()
+        print("Connected to SQLite")
+
+        x = data['empno']
+
+
+        sqlite_select_query = """SELECT * from Status where empno=? """
+        cursor.execute(sqlite_select_query,(empIden,))
+        
+        records = cursor.fetchall()
+        print("-->", records)
+        cursor.close()
+
+        if(len(records) == 0) :
+            # Mark attendance in first 
+            return jsonify({'login':'2'})
+             
+        else :
+
+
+            sqliteConnection = sqlite3.connect('test.db')
+            cursor = sqliteConnection.cursor()
+            print("Connected to SQLite")
+
+
+            sqlite_select_query = """SELECT * from Status where empno=? """
+            cursor.execute(sqlite_select_query,(empIden,))
+            
+            records = cursor.fetchall()
+            print("-->", records)
+
+            cursor.close()
+
+            if(records[0][2] == 'out' ):
+                # Mark in attendance first
+                return jsonify({'login':'2'})
+            
+            else :
+                pass
+        
+
+
+
+
+
+
+            
+        
+
+        unknown_image = face_recognition.load_image_file("imageToSave.png")
+        
+        face_locations = face_recognition.face_locations(unknown_image)
+        face_encodings = face_recognition.face_encodings(unknown_image, face_locations)
+        
+        resp = 'Nobody'
+        for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+
+            matches = face_recognition.compare_faces(encodeListKnown, face_encoding)
+            name = "Nobody"
+            
+            face_distances = face_recognition.face_distance(encodeListKnown, face_encoding)
+            best_match_index = np.argmin(face_distances)
+
+            if matches[best_match_index]:
+                resp = classNames[best_match_index]
+        
+        
+        print("ans = **** ", resp)	
+        if resp != 'Nobody':
+            markMyAttendance(resp)
+
+        # imgS = resize("imageToSave.png", (0, 0), None, 0.25, 0.25)
+        
+        # imgS = cvtColor("imageToSave.png", cv2.COLOR_BGR2RGB)
+
+        
+        
+        # facesCurFrame = face_recognition.face_locations(imgS)
+    
+        
+        # encodesCurFrame = face_recognition.face_encodings(imgS, facesCurFrame)
+
+        
+        # for encodeFace, faceLoc in zip(encodesCurFrame, facesCurFrame):
+        # 	matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
+        # 	faceDis = face_recognition.face_distance(encodeListKnown, encodeFace)
+        # 	matchIndex = np.argmin(faceDis)
+
+        # 	if matches[matchIndex]:
+        # 		name = classNames[matchIndex].upper()
+        # 		print("answer -> ", name)
+
+        print(empIden, "-------", resp)
+
+
+        if(empIden == resp) :
+
+            sqliteConnection = sqlite3.connect('test.db')
+            cursor = sqliteConnection.cursor()
+            print("Connected to SQLite")
+
+
+
+            sqlite_select_query = """SELECT * from Attendance where empno=? """
+            cursor.execute(sqlite_select_query,(empIden,))
+            
+            records = cursor.fetchall()
+            print("-->", records)
+
+            cursor.close()
+
+            now = datetime.now()
+            date_time =  now.strftime("%m/%d/%Y, %H:%M:%S")
+            
+            init_outtime = records[0][3]
+            sqliteConnection = sqlite3.connect('test.db')
+            cursor = sqliteConnection.cursor()
+            print("Connected to SQLite")
+
+            sql_update_query = """Update Attendance set out_time = ? where empno = ?"""
+            data = (init_outtime + date_time + ' | ' , empIden)
+            cursor.execute(sql_update_query, data)
+            sqliteConnection.commit()
+            print("Record Updated successfully")
+            cursor.close()
+
+                
+            sqliteConnection = sqlite3.connect('test.db')
+            cursor = sqliteConnection.cursor()
+            print("Connected to SQLite")
+
+            sql_update_query = """Update Status set emp_curr_status = ? where empno = ?"""
+            data = ('out' , empIden)
+            cursor.execute(sql_update_query, data)
+            sqliteConnection.commit()
+            print("Record Updated successfully")
+            cursor.close()
+
+            return jsonify({'login':'1'})
+        
+        else :
+            return jsonify({'login':'0'})
     
 
 
@@ -509,6 +743,35 @@ def login():
         else :
             return jsonify({'poss':'0'})    
 
+
+@app.route('/adminlogin', methods=['GET','POST'])
+def adminlogin():
+
+    data = request.get_json()
+    print(data)
+
+    if(data['empno'] =='admin' and data['password'] == 'admin123' ):
+        return jsonify({
+            'ok':'1'
+        })
+    else :
+        return jsonify({
+            'ok':'0'
+        })    
+
+    return data
+
+    # if(len(records) == 0) :
+            
+
+    #     return jsonify({'poss':'0'})
+
+    # else :
+
+    #     if(records[0][4] == data['password'] ) :
+    #         return jsonify({'poss':'1'})
+    #     else :
+    #         return jsonify({'poss':'0'})    
             
            
 
