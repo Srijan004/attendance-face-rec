@@ -3,7 +3,7 @@ import axios from 'axios';
 import Webcam from 'react-webcam';
 import { useHistory } from 'react-router-dom';
 
-const MarkAttendance = () => {
+const MarkAttendanceOut = () => {
   const history = useHistory()
 
   const webcamRef = React.useRef(null);
@@ -34,7 +34,7 @@ const MarkAttendance = () => {
     //   	  console.log(`error = ${error}`)
     // })
   
-    fetch("/markAttendance",
+    fetch("/markAttendanceOut",
     {
                 'method':'POST',
                  headers : {
@@ -42,7 +42,7 @@ const MarkAttendance = () => {
           },
           body:JSON.stringify( {image : imageSrc, empno: localStorage.getItem("MyUser")})
         }
-    ).then( (res) =>
+    ).then((res) =>
     res.json().then((data) => {
         // Setting a data from api
         // setdata({
@@ -53,11 +53,6 @@ const MarkAttendance = () => {
         // });
 
         console.log("Huo getUser resp : ", data)
-        
-        if(data['login'] == 2) {
-          alert("You're already in. ");
-          // history.push("/employee");        
-        }
 
         if(data['login'] == 0) {
             
@@ -65,7 +60,17 @@ const MarkAttendance = () => {
             localStorage.setItem("MyUser", JSON.stringify({}));
             history.push("/login");
             
-        } if(data['login'] == 1) {
+        } 
+        
+        if(data['login'] == 2) {
+            alert("Mark your in attendance first. ");
+            // history.push("/employee");
+            
+        } 
+        
+        
+        
+        if(data['login'] == 1) {
           alert('Attendce made');
             // localStorage.setItem("MyUser", JSON.stringify({}));
             // history.push("/employee");
@@ -92,11 +97,11 @@ const MarkAttendance = () => {
 	 videoConstraints = {videoConstraints}
 	/>
 
-    <button onClick={capture}>Mark Your Attendance Intime </button>
+    <button onClick={capture}>Mark Your Attendance Out time </button>
 	<h2>{name}</h2>
   </div>
 	);
   
 };
 
-export default MarkAttendance;
+export default MarkAttendanceOut;
