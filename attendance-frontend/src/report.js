@@ -82,9 +82,59 @@ const Report = () => {
     );
     }
 
+console.log("Hiii");
+Date.prototype.addDays = function(days) {
+    var date = new Date(this.valueOf());
+    console.log("->date : ", date);
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
+function getDates(startDate, stopDate) {
+    var dateArray = new Array();
+    var currentDate = startDate;
+    while (currentDate <= stopDate) {
+        dateArray.push(new Date (currentDate));
+        currentDate = currentDate.addDays(1);
+    }
+    return dateArray;
+}
+
+
+
     useEffect( () => {
 reporter();
     },  []);
+
+
+
+    var getDaysArray = function(start, end) {
+        for(var arr=[],dt=new Date(start); dt<=new Date(end); dt.setDate(dt.getDate()+1)){
+            arr.push(new Date(dt));
+        }
+        return arr;
+    };
+
+    console.log("->dtval ->",new Date("12/15/2022"));
+    var d1 = 4;
+
+    var t1 = "22:02:42";
+    var t2 = "23:00:01";
+
+    var t1_arr = t1.split(":");
+    var t2_arr = t2.split(":");
+    
+    t1_arr[0] = parseInt(t1_arr[0]);
+    t1_arr[1] = parseInt(t1_arr[1]);
+    t1_arr[2] = parseInt(t1_arr[2]);
+
+    t2_arr[0] = parseInt(t2_arr[0]);
+    t2_arr[1] = parseInt(t2_arr[1]);
+    t2_arr[2] = parseInt(t2_arr[2]);
+
+    var time_diff = (t2_arr[0]-t1_arr[0])*3600 + (t2_arr[1]-t1_arr[1])*60 + t2_arr[2] - t1_arr[2];
+    console.log("timediff : ",time_diff);
+
 
 
     return ( 
@@ -102,9 +152,13 @@ final.map( (user) => (
 {
     user[1].map((u0) => (
     <>
+
+    
         <div > Date : {u0[0]} </div>
         <div > Start time : {u0[1]} </div>
         <div > End time : {u0[2]} </div>
+         
+
         <br />
     </>
     ) )
