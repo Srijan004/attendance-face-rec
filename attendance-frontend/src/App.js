@@ -1,17 +1,17 @@
-import './App.css'
 import Webcam from 'react-webcam';
-import Homepage from "./homepage"
-import Login from "./login"
-import ClickTraining from './clickTrainingImg'
-import Register from "./register"
+import Homepage from "./components/homepage/homepage"
+import Login from "./components/loginEmployee/login"
+import ClickTraining from './components/clickTrainingImage/clickTrainingImg'
+import Register from "./components/register/register"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import MarkAttendance from './markAttendance'
+import MarkAttendance from './components/markAttendanceIn/markAttendance'
 import BarChart from './mycharts';
-import Report from './report';
-import Employee from './employee';
-import EmployeeProfile from './employeeProfille';
-import AdminLogin from './AdminLogin';
+import Report from './components/report/report';
+import Employee from './components/employeeDashboard/employee';
+import EmployeeProfile from './components/employeeProfile/employeeProfile';
+import AdminLogin from './components/loginAdmin/AdminLogin';
+import MarkAttendanceOut from './components/markAttendanceOut/markAttendanceOut';
 
 function App() {
 
@@ -57,6 +57,13 @@ function App() {
           <Route path="/markAttendance">
 
             <MarkAttendance/>
+
+
+          </Route>
+
+          <Route path="/markAttendanceOut">
+
+          <MarkAttendanceOut />
 
 
           </Route>

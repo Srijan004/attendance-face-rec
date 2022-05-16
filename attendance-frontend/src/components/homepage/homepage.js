@@ -2,6 +2,7 @@ import React from "react"
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
+import "./homepage.css"
 
 const Homepage = () => {
 
@@ -10,20 +11,15 @@ const Homepage = () => {
         
         <div className="homepage">
 
-            <div className="navbar">  
-                <h3>Services</h3>
-                <h3>About Me</h3>
-                <h3>How to use</h3>
-            
-            </div>
-
-            <h1 >PG FINDER WELCOMES YOU</h1>
+            {/* <div className="navbar">  
+<img src={mylogo} width= {80} height={80} />
+            </div> */}
 
             <div className="homeOptions">
  
-                <button className="loginEmployee homeOpts" onClick={ () => history.push("/login")}>
+                <div className="loginEmployee homeOpts" onClick={ () => history.push("/login")}>
                     Login as employee
-                </button>
+                </div>
 
                 <button className="loginAdmin homeOpts" onClick={ () => history.push("/adminLogin")}>
                     Login as admin

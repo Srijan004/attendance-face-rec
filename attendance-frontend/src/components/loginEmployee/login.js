@@ -3,9 +3,11 @@ import Webcam from 'react-webcam';
 
 import axios from "axios"
 import { useHistory } from "react-router-dom"
+import './login.css'
+const Login = ({ updateUser}) => {
 
-const AdminLogin = () => {
-   
+    
+
     const history = useHistory()
 
     const [ user, setUser] = useState({
@@ -35,7 +37,7 @@ const AdminLogin = () => {
 
     const login = () => {
 
-        fetch("/adminlogin",
+        fetch("/login",
         {
                     'method':'POST',
                      headers : {
@@ -55,39 +57,37 @@ const AdminLogin = () => {
 
             console.log("Huo getUser resp : ", data)
 
-            if(data['ok'] == 0) {
+            if(data['poss'] == 0) {
                 
-                alert("Not an admin !!")
+                alert("invalid credentials")
 
-                // setUser({});
+                setUser({});
 
                 window.location.reload();
 
             } else {
-                // localStorage.setItem("MyUser", JSON.stringify(user.empno));
-                history.push("/report");
+                localStorage.setItem("MyUser", JSON.stringify(user.empno));
+                history.push("/employee");
             }
 
 
         })
     );
 
+
     }
-
-
-    return (  
+    return (
+        
         <div className="login">
-        {/* <Webcam />  */}
-        <h1>Login</h1>
-        <input type="text" name="empno" value={user.empno} onChange={handleChange} placeholder="Enter admin username"></input>
-        <input type="password" name="password" value={user.password} onChange={handleChange}  placeholder="Enter admin Password" ></input>
-        <div className="button" onClick={login}>Login</div>
-        <div>or</div>
-        <div className="button" onClick={() => history.push("/register")}>Register</div>
-    </div>
-
-
-    );
+            {/* <Webcam />  */}
+            <h1>Login</h1>
+            <input type="text" name="empno" value={user.empno} onChange={handleChange} placeholder="Enter your employee number"></input>
+            <input type="password" name="password" value={user.password} onChange={handleChange}  placeholder="Enter your Password" ></input>
+            <div className="button" onClick={login}>Login</div>
+            <div>or</div>
+            <div className="button" onClick={() => history.push("/register")}>Register</div>
+        </div>
+    )
 }
- 
-export default AdminLogin;
+
+export default Login
