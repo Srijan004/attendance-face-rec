@@ -73,7 +73,79 @@ class Status(db.Model):
         return '<Task %r>' % self.id
 
 
+time_duration=0
+def calculate_duration(inTimeVal,outTimeVal):
 
+    inTime_array = inTimeVal.split(":")
+    outTime_array = outTimeVal.split(":")
+
+    inHour = int(inTime_array[0])
+    inMin = int(inTime_array[1])
+    inSec = int(inTime_array[2])
+
+    outHour = int(outTime_array[0])
+    outMin = int(outTime_array[1])
+    outSec = int(outTime_array[2])
+
+    final_duration = ((outHour-inHour)*3600 + (outMin-inMin)*60 + outSec-inSec)/3600
+    return round(final_duration,3)
+ 
+checkHash = {
+    "ok":1
+}
+
+print("chh",checkHash)
+
+sqliteConnection = sqlite3.connect('test.db')
+cursor = sqliteConnection.cursor()
+print("Connected to SQLite")    
+sqlite_select_query = """SELECT * from Attendance """
+
+cursor.execute(sqlite_select_query)
+
+records = cursor.fetchall()
+# print("-->", records)
+
+print("Total rows are:  ", len(records))
+print("Printing each row")
+
+hashMap = {}
+for row in records:
+    print(row)
+    print("Id: ", row[0])
+    print("Empno: ", row[1])
+    print("Intime: ", row[2])
+    print("Out-time: ", row[3])
+    
+    
+
+    activity_chart = {}
+
+    inTime_array = row[2].split("|")
+    outTime_array = row[3].split("|")
+
+    print("ita -> ", inTime_array, "ota ->" ,outTime_array)
+
+    for i in range(0,(len(inTime_array)-1)):
+
+        arrin_day = inTime_array[i].split(",")
+        arrout_day = outTime_array[i].split(",")
+
+        print("inside loop aid",arrin_day)
+        print("inside loop aod",arrout_day)
+
+        activity_chart[arrin_day[0]] = [arrin_day[1],arrout_day[1],calculate_duration(arrin_day[1],arrout_day[1])]
+
+
+    
+    
+
+    hashMap[row[1]] = activity_chart
+    
+    print("\n")
+
+print("the hashmap", hashMap)
+# quit();    
 
 # READING LOGIC ###############################
 # try:
@@ -467,7 +539,7 @@ def markAttendance():
             
             if(len(records) == 0) :
 
-                date_time = date_time + ' | '
+                date_time = date_time + '|'
                 new_log = Attendance(empno=data['empno'][1:len(data['empno'])-1 ], in_time=date_time, out_time='' )
                 db.session.add(new_log)
                 db.session.commit()
@@ -478,7 +550,7 @@ def markAttendance():
                 print("Connected to SQLite")
 
                 sql_update_query = """Update Attendance set in_time = ? where empno = ?"""
-                data = (init_intime + date_time + ' | ' , empIden)
+                data = (init_intime + date_time + '|' , empIden)
                 cursor.execute(sql_update_query, data)
                 sqliteConnection.commit()
                 print("Record Updated successfully")
@@ -642,7 +714,7 @@ def markAttendanceOut():
             print("Connected to SQLite")
 
             sql_update_query = """Update Attendance set out_time = ? where empno = ?"""
-            data = (init_outtime + date_time + ' | ' , empIden)
+            data = (init_outtime + date_time + '|' , empIden)
             cursor.execute(sql_update_query, data)
             sqliteConnection.commit()
             print("Record Updated successfully")
@@ -706,7 +778,16 @@ def getUser():
     return jsonify({
         "Log": records 
         })
-        
+
+
+
+
+@app.route('/reportForGraph', methods=['GET','POST'])
+def reportForGraph():
+
+    
+    return jsonify(hashMap)
+         
 
 @app.route('/login', methods=['GET','POST'])
 def login():
