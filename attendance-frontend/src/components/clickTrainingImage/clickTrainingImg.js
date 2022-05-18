@@ -1,57 +1,84 @@
-import React, {useState} from 'react';
-import axios from 'axios';
-import Webcam from 'react-webcam';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import Webcam from "react-webcam";
+import { useHistory } from "react-router-dom";
+import "./clickTraining.css";
+import logo from "../../images/newLogoSmall.PNG";
 
 const ClickTraining = () => {
-  const history = useHistory()
+  const history = useHistory();
 
   const webcamRef = React.useRef(null);
   const videoConstraints = {
-    width : 200,
-    height : 200,
-    facingMode: 'user'
+    width: 700,
+    height: 400,
+    facingMode: "user",
   };
-  const[name, setName] = useState('')
-  const capture = React.useCallback(
-  () => {
+  const [name, setName] = useState("");
+  const capture = React.useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
-    console.log(`imageSrc = ${imageSrc}`)
-                //for deployment, you should put your backend url / api
-    axios.post('/clickTrainingImg', {image : imageSrc, empno: localStorage.getItem("MyUser")})
-    	  .then(res => {
+    console.log(`imageSrc = ${imageSrc}`);
 
-          // history.push("/login");
-      	  console.log(`response = ${res}`);
+    fetch("/clickTrainingImg",
+    {
+                'method':'POST',
+                 headers : {
+                'Content-Type':'application/json'
+          },
+          body:JSON.stringify( {
+            image: imageSrc,
+            empno: localStorage.getItem("MyUser"),
+          })
+        }
+    ).then((res) =>
+    res.json().then((data) => {
+
+        console.log("Huo getUser resp : ", data)
+
+        if(data['face_present'] == 0) {
+          alert("Please click a clear image !!");
+        }
+         if(data['face_present'] == 1) {
           localStorage.setItem("MyUser", JSON.stringify({}));
+         alert("Image saved to the database")  ;
+         history.push("/");
+        }
+    })
+);
 
-          history.push("/");
-      	  // setName(res.data)
-    })
-    	  .catch(error => {
-      	  console.log(`error = ${error}`)
-    })
-  }, 
-   [webcamRef]
-  );
-  
+  }, [webcamRef]);
+
   return (
-  <div>
-    
-    <Webcam
-   audio = {false}
-	 height = {300}
-	 ref = {webcamRef}
-	 screenshotFormat = "image/jpeg"
-	 width = {350}
-	 videoConstraints = {videoConstraints}
-	/>
+    <div className="webcamPageFull">
+      <div className="adminLoginNavbar">
+        <img
+          src={logo}
+          alt=""
+          className="adminProjectLogo"
+          onClick={() => history.push("/")}
+        />
+      </div>
 
-    <button onClick={capture}>Click Me!</button>
-	<h2>{name}</h2>
-  </div>
-	);
+<div className="webcamMain">
+
+<div className="webcamInstruction">
+<h2>You are almost there. Click a photo of yours. This photo will be stored in the</h2>
+<h2> database and will be used for matching whenever you mark your attendance. </h2>
+</div>
   
+      <Webcam
+        className="webcam"
+        audio={false}
+        ref={webcamRef}
+        screenshotFormat="image/jpeg"
+        videoConstraints={videoConstraints}
+      />
+
+      <button className="webcamButton" onClick={capture}>Click regristration image</button>
+   
+    </div>
+</div>
+  );
 };
 
 export default ClickTraining;

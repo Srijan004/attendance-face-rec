@@ -20,6 +20,7 @@ import cv2
 
 import face_recognition
 
+
 print(datetime.now())
 
 app = Flask(__name__)
@@ -370,31 +371,40 @@ print('Encoding Complete')
 def clickTrainingImg():
 
     data = request.get_json()
-    print("-->",  data['image'])
+    # print("-->",  data['image'])
     x = data['image']
     x = x.split(",")[1]
-    print("x = ",x)
+    # print("x = ",x)
     
-	
-    
-
-	
     img_data = x
-
 	
     img_data = img_data.encode("ascii")
     y = (data['empno'])
     l = len(y)-1
     z= y[1:l]
 	
+    with open("checkValidImage.png", "wb") as fh:
+            fh.write(base64.decodebytes(img_data))
+
+    unknown_image = face_recognition.load_image_file("checkValidImage.png")    
+    face_locations = face_recognition.face_locations(unknown_image)
     
+    if(len(face_locations)==0):
+        return jsonify({'face_present' : 0})
     
+
     with open("Training_images/" + z + ".jpg", "wb") as fh:
 
 		
         fh.write(base64.decodebytes(img_data))
 
-    return data    
+
+    print("the length of face_loc array", len(face_locations))    
+    return jsonify({'face_present' : 1})  
+
+    
+    
+
 
 
 @app.route('/markAttendance', methods=['POST', 'GET'])
