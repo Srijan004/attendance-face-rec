@@ -4,6 +4,9 @@ import Webcam from 'react-webcam';
 import axios from "axios"
 import { useHistory } from "react-router-dom"
 import './login.css'
+
+import logo from "../../images/newLogoSmall.PNG";
+import employeeLogo from "../../images/employeeLogo.png";
 const Login = ({ updateUser}) => {
 
     
@@ -78,15 +81,31 @@ const Login = ({ updateUser}) => {
     }
     return (
         
-        <div className="login">
-            {/* <Webcam />  */}
-            <h1>Login</h1>
-            <input type="text" name="empno" value={user.empno} onChange={handleChange} placeholder="Enter your employee number"></input>
-            <input type="password" name="password" value={user.password} onChange={handleChange}  placeholder="Enter your Password" ></input>
-            <div className="button" onClick={login}>Login</div>
-            <div>or</div>
-            <div className="button" onClick={() => history.push("/register")}>Register</div>
+        <div className="admLogFull">
+        <div className="adminLoginNavbar">
+          
+          
+          <img
+            src={logo}
+            alt=""
+            className="adminProjectLogo"
+            onClick={() => history.push("/")}
+          />
         </div>
+  
+        <div className="loginEmployeeMain">
+  
+          <img src={employeeLogo} className="adminLogoLogin" alt="" />
+  
+        <div className="login">
+          {/* <Webcam />  */}
+          <h1>Employee Login</h1>
+          <input type="text" name="empno" value={user.empno} onChange={handleChange} placeholder="Enter employee number"></input>
+          <input type="password" name="password" value={user.password} onChange={handleChange}  placeholder="Enter your Password" ></input>
+          <div className="button" onClick={login}>Login</div> 
+      </div>
+        </div>
+      </div>
     )
 }
 

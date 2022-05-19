@@ -2,6 +2,9 @@ import React, { useState,useEffect } from "react"
 import axios from "axios"
 import { useHistory } from "react-router-dom"
 import './register.css'
+
+import logo from "../../images/newLogoSmall.PNG";
+import employeeLogo from "../../images/addEmployeeRegPage0.png";
 const Register = () => {
 
     const history = useHistory()
@@ -51,7 +54,7 @@ const Register = () => {
 
                 if(data['empno'] == 0) {
                     
-                    alert("same empno")
+                    alert("An employee with this employee number already exists in the database. Employee Number is unique for an employee")
 
                     setUser({});
 
@@ -65,7 +68,7 @@ const Register = () => {
 
             })
         );
-    }
+    } else alert("Please enter valid data !!")
         //     fetch(`/register`,{
         //         'method':'POST',
         //          headers : {
@@ -104,6 +107,63 @@ const Register = () => {
     }, []);
 
     return (
+
+        <div className="admLogFull">
+        <div className="adminLoginNavbar">
+          
+          
+          <img
+            src={logo}
+            alt=""
+            className="adminProjectLogo"
+            onClick={() => history.push("/")}
+          />
+        </div>
+  
+        <div className="registerEmployeeMain">
+  
+          <img src={employeeLogo} className="registerIcon" alt="" />
+          <div className="register">
+            <h1>Register a new Employee</h1>
+            <input type="text" name="name" value={user.name} placeholder="Your Name" onChange={ handleChange }></input>
+            <input type="text" name="empno" value={user.empno} placeholder="Employee number" onChange={ handleChange }></input>
+            <input type="text" name="email" value={user.email} placeholder="Your Email" onChange={ handleChange }></input>
+            <input type="password" name="password" value={user.password} placeholder="Your Password" onChange={ handleChange }></input>
+            <input type="password" name="reEnterPassword" value={user.reEnterPassword} placeholder="Re-enter Password" onChange={ handleChange }></input>
+            <div className="button" onClick={register} >Register</div>
+        
+        </div>
+        </div>
+      </div>
+    )
+}
+
+export default Register
+
+/*
+
+          <h1>Admin Login</h1>
+          <input
+            type="text"
+            name="empno"
+            value={user.empno}
+            onChange={handleChange}
+            placeholder="Enter admin username"
+          ></input>
+          <input
+            type="password"
+            name="password"
+            value={user.password}
+            onChange={handleChange}
+            placeholder="Enter admin Password"
+          ></input>
+          <div className="button" onClick={login}>
+            Login
+          </div>
+*/ 
+
+/*
+
         <div className="register">
             {console.log("User", user)}
             <h1>Register</h1>
@@ -116,7 +176,4 @@ const Register = () => {
             <div>or</div>
             <div className="button" onClick={() => history.push("/login")}>Login</div>
         </div>
-    )
-}
-
-export default Register
+*/
