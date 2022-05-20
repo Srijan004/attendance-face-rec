@@ -1,33 +1,66 @@
-import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom";
+import "./employeeDashboard.css";
+import logo from "../../images/newLogoSmall.PNG";
+import entryIcon from "../../images/employeeEntering.png";
+import exitIcon from "../../images/employeeExiting.png";
+import viewProfile from "../../images/profileIcon.png";
 
 const Employee = () => {
+  const history = useHistory();
 
-    const history = useHistory()
+  return (
+    <div className="employeeDashboardFull">
+      <div className="employeeDashboardNavbar">
+        <img
+          src={logo}
+          alt=""
+          className="employeeDashboardProjectLogo"
+          onClick={() => history.push("/")}
+        />
+        <div
+          className="employeeLogoutOnDashboard"
+          onClick={() => {
+            localStorage.setItem("MyUser", JSON.stringify({}));
+            history.push("/");
+          }}
+        >
+          {" "}
+          Logout
+        </div>
+      </div>
 
-    return ( 
+      <div className="employeeOptions">
+        <div
+          className="employeeDashboardOptions"
+          onClick={() => history.push("/markAttendance")}
+        >
+          <div className="imgEmpDashboard">
+            <img src={entryIcon} className="employeeDashboardImage" alt="" />
+          </div>
 
-<div> 
+          <div className="employeeDashboardLabel">Mark attendance In </div>
+        </div>
+        <div
+          className="employeeDashboardOptions"
+          onClick={() => history.push("/employeeProfile")}
+        >
+          <div className="imgEmpDashboard">
+            <img src={viewProfile} className="employeeDashboardImage" alt="" />
+          </div>
+          <div className="employeeDashboardLabel">View Profile</div>
+        </div>
+        <div
+          className="employeeDashboardOptions"
+          onClick={() => history.push("/markAttendanceOut")}
+        >
+          <div className="imgEmpDashboard">
+            <img src={exitIcon} className="employeeDashboardImage" alt="" />
+          </div>
+          <div className="employeeDashboardLabel">Mark attendance Out</div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-<h1>Employee Dashboard</h1>
-
-<div className="employeeOptions">
-
-<button className="employeeOpts homeOpts" onClick={ () => history.push("/markAttendance")}>Mark attendance In </button>
-<button className="employeeOpts homeOpts" onClick={ () => history.push("/markAttendanceOut")}>Mark attendance Out</button>
-<button className="employeeOpts homeOpts" onClick={ () => history.push("/employeeProfile")}>View Profile</button>
-<button className="employeeOpts homeOpts" onClick={ () => {
-    
-    localStorage.setItem("MyUser", JSON.stringify({}));
-    history.push("/")}
-    
-    }>Logout</button>
-
-</div>
-
-
-</div>
-
-     );
-}
- 
 export default Employee;

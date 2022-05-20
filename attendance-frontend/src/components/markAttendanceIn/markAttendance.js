@@ -2,14 +2,15 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import Webcam from 'react-webcam';
 import { useHistory } from 'react-router-dom';
+import logo from "../../images/newLogoSmall.PNG";
 
 const MarkAttendance = () => {
   const history = useHistory()
 
   const webcamRef = React.useRef(null);
   const videoConstraints = {
-    width : 200,
-    height : 200,
+    width: 700,
+    height: 400,
     facingMode: 'user'
   };
   const[name, setName] = useState('')
@@ -81,20 +82,38 @@ const MarkAttendance = () => {
   );
   
   return (
-  <div>
-    
-    <Webcam
-   audio = {false}
-	 height = {300}
-	 ref = {webcamRef}
-	 screenshotFormat = "image/jpeg"
-	 width = {350}
-	 videoConstraints = {videoConstraints}
-	/>
 
-    <button onClick={capture}>Mark Your Attendance Intime </button>
-	<h2>{name}</h2>
+    <div className="webcamPageFull">
+    <div className="adminLoginNavbar">
+      <img
+        src={logo}
+        alt=""
+        className="adminProjectLogo"
+        onClick={() => history.push("/")}
+      />
+    </div>
+
+<div className="webcamMain">
+
+<div className="webcamInstruction">
+<h2> Click on the button given below to Mark your Intime attendance </h2>
+</div>
+
+    <Webcam
+      className="webcam"
+      audio={false}
+      ref={webcamRef}
+      screenshotFormat="image/jpeg"
+      videoConstraints={videoConstraints}
+    />
+
+    <button className="webcamButton" onClick={capture}>Mark Attendance - In</button>
+ 
   </div>
+</div>
+
+
+
 	);
   
 };
