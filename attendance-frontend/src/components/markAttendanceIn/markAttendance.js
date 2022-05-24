@@ -3,9 +3,11 @@ import axios from 'axios';
 import Webcam from 'react-webcam';
 import { useHistory } from 'react-router-dom';
 import logo from "../../images/newLogoSmall.PNG";
+import Login from '../loginEmployee/login';
 
 const MarkAttendance = () => {
   const history = useHistory()
+  const loginCheck =  JSON.parse(localStorage.getItem("userDetail"));
 
   const webcamRef = React.useRef(null);
   const videoConstraints = {
@@ -82,8 +84,10 @@ const MarkAttendance = () => {
   );
   
   return (
-
-    <div className="webcamPageFull">
+<>
+{
+  (loginCheck.empno) ? 
+  <div className="webcamPageFull">
     <div className="adminLoginNavbar">
       <img
         src={logo}
@@ -112,6 +116,14 @@ const MarkAttendance = () => {
   </div>
 </div>
 
+:
+<Login />
+
+}
+
+</>
+
+  
 
 
 	);

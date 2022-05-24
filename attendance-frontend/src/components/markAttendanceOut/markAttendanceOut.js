@@ -3,9 +3,11 @@ import axios from 'axios';
 import Webcam from 'react-webcam';
 import { useHistory } from 'react-router-dom';
 import logo from "../../images/newLogoSmall.PNG";
+import Login from '../loginEmployee/login';
 
 const MarkAttendanceOut = () => {
   const history = useHistory()
+  const loginCheck =  JSON.parse(localStorage.getItem("userDetail"));
 
   const webcamRef = React.useRef(null);
   const videoConstraints = {
@@ -86,35 +88,50 @@ const MarkAttendanceOut = () => {
    [webcamRef]
   );
   
-  return ( <div className="webcamPageFull">
-  <div className="adminLoginNavbar">
-    <img
-      src={logo}
-      alt=""
-      className="adminProjectLogo"
-      onClick={() => history.push("/")}
+  return ( 
+  <>
+  {
+    (loginCheck.empno) ? 
+
+    <div className="webcamPageFull">
+    <div className="adminLoginNavbar">
+      <img
+        src={logo}
+        alt=""
+        className="adminProjectLogo"
+        onClick={() => history.push("/")}
+      />
+    </div>
+  
+  <div className="webcamMain">
+  
+  <div className="webcamInstruction">
+  <h2> Click on the button given below to Mark your Out-time attendance </h2>
+  
+  </div>
+  
+    <Webcam
+      className="webcam"
+      audio={false}
+      ref={webcamRef}
+      screenshotFormat="image/jpeg"
+      videoConstraints={videoConstraints}
     />
+  
+    <button className="webcamButton" onClick={capture}>Mark Attendance - Out</button>
+  
+  </div>
   </div>
 
-<div className="webcamMain">
+:
 
-<div className="webcamInstruction">
-<h2> Click on the button given below to Mark your Out-time attendance </h2>
+<Login />
 
-</div>
+  }
+  
+  </>
 
-  <Webcam
-    className="webcam"
-    audio={false}
-    ref={webcamRef}
-    screenshotFormat="image/jpeg"
-    videoConstraints={videoConstraints}
-  />
-
-  <button className="webcamButton" onClick={capture}>Mark Attendance - Out</button>
-
-</div>
-</div>
+  
 	);
   
 };
