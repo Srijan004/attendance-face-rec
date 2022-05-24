@@ -515,6 +515,10 @@ def markAttendance():
 
             if matches[best_match_index]:
                 resp = classNames[best_match_index]
+                print("face dist[best-match] : ", face_distances[best_match_index])
+                percent_accuracy = face_distance_to_conf(face_distances[best_match_index])*100
+                print("Percent accuracy : ",percent_accuracy)
+        
         
         
         print("ans = **** ", resp)	
@@ -686,6 +690,10 @@ def markAttendanceOut():
 
             if matches[best_match_index]:
                 resp = classNames[best_match_index]
+                print("face dist[best-match] : ", face_distances[best_match_index])
+                percent_accuracy = face_distance_to_conf(face_distances[best_match_index])*100
+                print("Percent accuracy : ",percent_accuracy)
+        
         
         
         print("ans = **** ", resp)	
