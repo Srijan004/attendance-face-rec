@@ -107,56 +107,45 @@ checkHash = {
 
 print("chh",checkHash)
 
-sqliteConnection = sqlite3.connect('test.db')
-cursor = sqliteConnection.cursor()
-print("Connected to SQLite")    
-sqlite_select_query = """SELECT * from Attendance """
+def createHashMap () :
 
-cursor.execute(sqlite_select_query)
+    sqliteConnection = sqlite3.connect('test.db')
+    cursor = sqliteConnection.cursor()
+    print("Connected to SQLite")    
+    sqlite_select_query = """SELECT * from Attendance """
 
-records = cursor.fetchall()
-# print("-->", records)
+    cursor.execute(sqlite_select_query)
 
-print("Total rows are:  ", len(records))
-print("Printing each row")
+    records = cursor.fetchall()
+    # print("-->", records)
 
-hashMap = {}
-for row in records:
-    print(row)
-    print("Id: ", row[0])
-    print("Empno: ", row[1])
-    print("Intime: ", row[2])
-    print("Out-time: ", row[3])
-    
-    
+ 
 
-    activity_chart = {}
+    hashMap = {}
+    for row in records:
+     
+        activity_chart = {}
 
-    inTime_array = row[2].split("|")
-    outTime_array = row[3].split("|")
+        inTime_array = row[2].split("|")
+        outTime_array = row[3].split("|")
 
-    print("ita -> ", inTime_array, "ota ->" ,outTime_array)
+        print("ita -> ", inTime_array, "ota ->" ,outTime_array)
 
-    for i in range(0,(len(inTime_array)-1)):
+        for i in range(0,(len(inTime_array)-1)):
 
-        arrin_day = inTime_array[i].split(",")
-        arrout_day = outTime_array[i].split(",")
-
-        print("inside loop aid",arrin_day)
-        print("inside loop aod",arrout_day)
-
-        activity_chart[arrin_day[0]] = [arrin_day[1],arrout_day[1],calculate_duration(arrin_day[1],arrout_day[1])]
+            arrin_day = inTime_array[i].split(",")
+            arrout_day = outTime_array[i].split(",")
+  
+            activity_chart[arrin_day[0]] = [arrin_day[1],arrout_day[1],calculate_duration(arrin_day[1],arrout_day[1])]
 
 
-    
-    
+        
+        
 
-    hashMap[row[1]] = activity_chart
-    
-    print("\n")
-
-print("the hashmap", hashMap)
-# quit();    
+        hashMap[row[1]] = activity_chart
+        
+ 
+    return hashMap
 
 # READING LOGIC ###############################
 # try:
@@ -819,10 +808,10 @@ def getUser():
 
 @app.route('/reportForGraph', methods=['GET','POST'])
 def reportForGraph():
-
-    
-    return jsonify(hashMap)
-         
+ 
+    hashTable = createHashMap()
+ 
+    return jsonify(hashTable)
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -898,7 +887,7 @@ def login():
         return jsonify({'poss':'1','employeeDetail':result})
     else :
         return jsonify({'poss':'0'})    
-        
+
 
 @app.route('/adminlogin', methods=['GET','POST'])
 def adminlogin():
