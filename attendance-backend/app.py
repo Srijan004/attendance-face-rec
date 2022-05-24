@@ -829,6 +829,8 @@ def login():
 
     data = request.get_json()
     print(data)
+    empIden = data['empno']
+    print('empiden ->', empIden)
 
     sqliteConnection = sqlite3.connect('test.db')
     cursor = sqliteConnection.cursor()
@@ -840,25 +842,63 @@ def login():
     cursor.execute(sqlite_select_query,(x,))
     
     records = cursor.fetchall()
-    print("-->", records)
-
     cursor.close()
 
-
-
-
-    if(len(records) == 0) :
-            
-
+    if(len(records) == 0) : 
         return jsonify({'poss':'0'})
 
+    empDetail = records[0]
+    print("empDetail-->", empDetail[1])
+
+
+    # l=len(empIden)
+
+    
+    my_string=''
+    pathv = "Training_images/" + empIden + ".jpg"
+
+    with open(pathv, "rb") as img_file:
+        my_string = base64.b64encode(img_file.read())
+    
+    my_string = my_string.decode("utf-8")
+    # my_string = my_string.encode("ascii")
+ 
+
+    sqliteConnection = sqlite3.connect('test.db')
+    cursor = sqliteConnection.cursor()
+    print("Connected to SQLite")
+
+    x = data['empno']
+
+    sqlite_select_query = """SELECT * from Status where empno=? """
+    cursor.execute(sqlite_select_query,(x,))
+    
+    empStatus = cursor.fetchall()
+    if(len(empStatus) != 0):
+        empStatus = empStatus[0]
+    else:
+         empStatus = ['','',''] 
+    # print("empStatus-->", empStatus)
+
+    result = {
+        'name':empDetail[1] ,
+        'email' : empDetail[3],
+        'empno' : empDetail[2],
+        'doj' : empDetail[5].split(" ")[0],
+        'status' : empStatus[2],
+        'photo' : my_string
+
+    }
+
+  
+
+
+
+    if(records[0][4] == data['password'] ) :
+        return jsonify({'poss':'1','employeeDetail':result})
     else :
-
-        if(records[0][4] == data['password'] ) :
-            return jsonify({'poss':'1'})
-        else :
-            return jsonify({'poss':'0'})    
-
+        return jsonify({'poss':'0'})    
+        
 
 @app.route('/adminlogin', methods=['GET','POST'])
 def adminlogin():
