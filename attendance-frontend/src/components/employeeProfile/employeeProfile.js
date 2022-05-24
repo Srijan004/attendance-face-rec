@@ -1,3 +1,6 @@
+
+import "./employeeProfile.css"; 
+
 const EmployeeProfile = () => {
     return ( 
 
