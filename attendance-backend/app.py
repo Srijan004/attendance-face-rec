@@ -387,6 +387,7 @@ def clickTrainingImg():
     # print("x = ",x)
     
     img_data = x
+
 	
     img_data = img_data.encode("ascii")
     y = (data['empno'])
@@ -398,22 +399,28 @@ def clickTrainingImg():
 
     unknown_image = face_recognition.load_image_file("checkValidImage.png")    
     face_locations = face_recognition.face_locations(unknown_image)
+
+    print("the length of face_loc array", len(face_locations))    
     
     if(len(face_locations)==0):
         return jsonify({'face_present' : 0})
     
 
-    with open("Training_images/" + z + ".jpg", "wb") as fh:
-
-		
+    
+    with open("Training_images/" + z + ".jpg", "wb") as fh:		
         fh.write(base64.decodebytes(img_data))
 
+    imgPath = "Training_images/" + z + ".jpg"    
 
-    print("the length of face_loc array", len(face_locations))    
+    curImg = cv2.imread(imgPath)
+    images.append(curImg)
+    classNames.append(z)
+    
+    img = cv2.cvtColor(curImg, cv2.COLOR_BGR2RGB)
+    encode = face_recognition.face_encodings(img)[0]
+    encodeListKnown.append(encode) 
+
     return jsonify({'face_present' : 1})  
-
-    
-    
 
 
 
