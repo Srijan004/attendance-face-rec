@@ -3,8 +3,10 @@ import "./employeeProfile.css";
 
 const EmployeeProfile = () => {
     return ( 
+<>
+{    (loginCheck.empno) ? 
 
-      <div>
+    <div>
       <div className="employeeDashboardNavbar">
         <img
           src={logo}
@@ -152,6 +154,14 @@ const EmployeeProfile = () => {
         </div>
       </div>
     </div>
+
+    :
+
+    <Login />
+    
+}
+    </>
+
      );
 }
  
