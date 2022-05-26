@@ -38,6 +38,11 @@ const ClickTraining = () => {
         if(data['face_present'] == 0) {
           alert("Please click a clear image !!");
         }
+
+        if(data['face_present'] == 2) {
+          alert("Your registration image must have a single person !! Click a solo picture of yours.");
+        }
+
          if(data['face_present'] == 1) {
           localStorage.setItem("MyUser", JSON.stringify({}));
          alert("Image saved to the database")  ;
@@ -49,6 +54,8 @@ const ClickTraining = () => {
   }, [webcamRef]);
 
   return (
+
+    
     <div className="webcamPageFull">
       <div className="adminLoginNavbar">
         <img
@@ -62,8 +69,8 @@ const ClickTraining = () => {
 <div className="webcamMain">
 
 <div className="webcamInstruction">
-<h2>You are almost there. Click a photo of yours. This photo will be stored in the</h2>
-<h2> database and will be used for matching whenever you mark your attendance. </h2>
+<h2>You are almost there. Click your photo using the button below. This photo will be stored</h2>
+<h2>in the database and will be used for matching whenever you mark your attendance. </h2>
 </div>
   
       <Webcam
