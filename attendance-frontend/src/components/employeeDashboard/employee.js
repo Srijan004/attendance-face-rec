@@ -5,6 +5,7 @@ import entryIcon from "../../images/employeeEntering.png";
 import exitIcon from "../../images/employeeExiting.png";
 import viewProfile from "../../images/profileIcon.png";
 import Login from "../loginEmployee/login";
+import AccessDenied from "../AccessDenied/AccessDenied";
 
 const Employee = () => {
   const history = useHistory();
@@ -13,7 +14,7 @@ const Employee = () => {
   return (
     <>
 {
-  (loginCheck.empno) ?    <div className="employeeDashboardFull">
+  (loginCheck && loginCheck.empno) ?    <div className="employeeDashboardFull">
   <div className="employeeDashboardNavbar">
     <img
       src={logo}
@@ -66,7 +67,7 @@ const Employee = () => {
   </div>
 </div>
  :
- <Login /> 
+ <AccessDenied /> 
 }
     </>
 
