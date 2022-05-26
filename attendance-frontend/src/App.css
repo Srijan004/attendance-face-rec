@@ -1,9 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+* {
+     font-family: "Quicksand";
+ 
+  }
 
+  /* table {
+    font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 1200px;
+  }
+  
+  table td,
+  table th {
+    border: 1px solid #ddd;
+    padding: 8px;
+  }
+  
+  table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  table tr:hover {
+    background-color: #ddd;
+  }
+  
+  table th, tfoot td {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: #4caf50;
+    color: white;
+  }
 
-
-.homepage img {
+  .barchart{
+    width: 958px;
+    height: 507px;
+  } */
+  
+/* .homepage img {
     border-radius: 200px;
-}
+} */
 /* .homepage > .button {
     background: #1877f2;
     border: 1px solid #1877f2;
@@ -18,7 +54,7 @@
 
 
 
-.login {
+/* .login {
     width: 400px;
     background: #fff;
     border: 1px solid #dddfe2;
@@ -79,7 +115,7 @@
     color: #fff;
     background-color: #00babe;
     border: none;
-    /* border-radius: 800px; */
+    border-radius: 800px;
     box-shadow:  7px 6px 28px 1px rgba(0, 0, 0, 0.24);
 }
 
@@ -88,5 +124,5 @@
 
     box-shadow:  7px 6px 28px 1px rgba(0, 0, 0, 0.24);
     transform: translateY(4px);
-    /* Moving button 4px to y-axis */
-}
+    Moving button 4px to y-axis
+} */
