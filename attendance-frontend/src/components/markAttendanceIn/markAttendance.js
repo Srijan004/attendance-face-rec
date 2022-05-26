@@ -47,7 +47,7 @@ const MarkAttendance = () => {
             history.push("/login");
             
         } if(data['login'] == 1) {
-          alert(`Attendce made !! You have been identified with ${data['percent_accuracy']}%`);
+          alert(`Attendce made !! You have been identified with ${data['percent_accuracy']}% accuracy`);
         }
 
 
