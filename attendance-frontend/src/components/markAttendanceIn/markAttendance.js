@@ -4,6 +4,7 @@ import Webcam from 'react-webcam';
 import { useHistory } from 'react-router-dom';
 import logo from "../../images/newLogoSmall.PNG";
 import Login from '../loginEmployee/login';
+import AccessDenied from '../AccessDenied/AccessDenied';
 
 const MarkAttendance = () => {
   const history = useHistory()
@@ -21,21 +22,6 @@ const MarkAttendance = () => {
     
     const imageSrc = webcamRef.current.getScreenshot();
     console.log(`imageSrc = ${imageSrc}`)
-                //for deployment, you should put your backend url / api
-    // axios.post('/markAttendance', {image : imageSrc, empno: localStorage.getItem("MyUser")})
-    // 	  .then(res => {
-
-    //       // history.push("/login");
-    //   	  // console.log(`response = ${res}`);
-    //       // localStorage.setItem("MyUser", JSON.stringify({}));
-    //       console.log( "markAtendnce flask says : ", res)
-
-    //       // history.push("/login");
-    //   	  // setName(res.data)
-    // })
-    // 	  .catch(error => {
-    //   	  console.log(`error = ${error}`)
-    // })
   
     fetch("/markAttendance",
     {
@@ -47,19 +33,11 @@ const MarkAttendance = () => {
         }
     ).then( (res) =>
     res.json().then((data) => {
-        // Setting a data from api
-        // setdata({
-        //     name: data.Name,
-        //     age: data.Age,
-        //     date: data.Date,
-        //     programming: data.programming,
-        // });
 
         console.log("Huo getUser resp : ", data)
         
         if(data['login'] == 2) {
           alert("You're already in. ");
-          // history.push("/employee");        
         }
 
         if(data['login'] == 0) {
@@ -69,9 +47,7 @@ const MarkAttendance = () => {
             history.push("/login");
             
         } if(data['login'] == 1) {
-          alert('Attendce made');
-            // localStorage.setItem("MyUser", JSON.stringify({}));
-            // history.push("/employee");
+          alert(`Attendce made !! You have been identified with ${data['percent_accuracy']}%`);
         }
 
 
@@ -86,7 +62,7 @@ const MarkAttendance = () => {
   return (
 <>
 {
-  (loginCheck.empno) ? 
+  (loginCheck && loginCheck.empno) ? 
   <div className="webcamPageFull">
     <div className="adminLoginNavbar">
       <img
@@ -117,7 +93,7 @@ const MarkAttendance = () => {
 </div>
 
 :
-<Login />
+<AccessDenied />
 
 }
 
