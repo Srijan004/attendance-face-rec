@@ -30,14 +30,6 @@ const Login = ({ updateUser}) => {
         console.log(user);
     }
 
-    // const login = () => {
-    //     axios.post("/login", user)
-    //     .then(res => {
-    //         console.log(res);
-    //         // history.push("/")
-    //     })
-    // }
-
     const login = () => {
 
         fetch("/login",
@@ -50,15 +42,10 @@ const Login = ({ updateUser}) => {
             }
         ).then((res) =>
         res.json().then((data) => {
-            // Setting a data from api
-            // setdata({
-            //     name: data.Name,
-            //     age: data.Age,
-            //     date: data.Date,
-            //     programming: data.programming,
-            // });
 
-            console.log("Huo getUser resp : ", data)
+            console.log("New Daata : ", data)
+
+            console.log("-1",user,"-2", user.empno)
 
             if(data['poss'] == 0) {
                 
@@ -70,6 +57,8 @@ const Login = ({ updateUser}) => {
 
             } else {
                 localStorage.setItem("MyUser", JSON.stringify(user.empno));
+                localStorage.setItem("userDetail", JSON.stringify(data['employeeDetail']));
+
                 history.push("/employee");
             }
 

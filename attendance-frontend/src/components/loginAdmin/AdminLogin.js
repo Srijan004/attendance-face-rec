@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Webcam from "react-webcam";
-
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import "./login.css";
@@ -25,14 +24,6 @@ const AdminLogin = () => {
     console.log(user);
   };
 
-  // const login = () => {
-  //     axios.post("/login", user)
-  //     .then(res => {
-  //         console.log(res);
-  //         // history.push("/")
-  //     })
-  // }
-
   const login = () => {
     fetch("/adminlogin", {
       method: "POST",
@@ -42,24 +33,19 @@ const AdminLogin = () => {
       body: JSON.stringify(user),
     }).then((res) =>
       res.json().then((data) => {
-        // Setting a data from api
-        // setdata({
-        //     name: data.Name,
-        //     age: data.Age,
-        //     date: data.Date,
-        //     programming: data.programming,
-        // });
-
+      
         console.log("Huo getUser resp : ", data);
 
         if (data["ok"] == 0) {
           alert("Not an admin !!");
-
-          // setUser({});
-
           window.location.reload();
         } else {
-          // localStorage.setItem("MyUser", JSON.stringify(user.empno));
+          const admin = {
+            'admin' : 5
+          }
+
+          localStorage.setItem("Admin", JSON.stringify(admin));
+ 
           history.push("/report");
         }
       })
@@ -107,31 +93,3 @@ const AdminLogin = () => {
 };
 
 export default AdminLogin;
-
-/*
-
-<img src={adminLogo} className="adminLogo" alt="" />
-          <input
-            type="text"
-            className="adminUsername"
-            name="empno"
-            value={user.empno}
-            onChange={handleChange}
-            placeholder="Enter admin username"
-          ></input>
-
-          <input
-            type="password"
-            className="adminPassword"
-            name="password"
-            value={user.password}
-            onChange={handleChange}
-            placeholder="Enter admin Password"
-          ></input>
-
-          <div className="loginButton" onClick={login}>
-            Login
-          </div>
-
-
-*/

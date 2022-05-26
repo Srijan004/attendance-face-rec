@@ -30,7 +30,7 @@ const Homepage = () => {
         </div>
 
         <div className="homePageRightDn">
-          <button className="homeOption">
+          <button className="homeOption" onClick = {()=>history.push("/login")}>
                 <div className="homeOptionImage">
                 <img src={employee} className="optionImage" />
                 </div>
@@ -38,7 +38,7 @@ const Homepage = () => {
                  Login as employee 
           </button>
 
-          <button className="homeOption" onClick = {()=>history.push("/login")}>
+          <button className="homeOption" onClick = {()=>history.push("/adminLogin")}>
              <div className="homeOptionImage">
                 <img src={admin} className="optionImage" />
                 </div>
@@ -46,7 +46,7 @@ const Homepage = () => {
                 Login as admin 
           </button>
 
-          <button className="homeOption">
+          <button className="homeOption" onClick = {()=>history.push("/register")}>
                 <div className="homeOptionImage">
                 <img src={addEmployee} className="optionImage" />
                 </div>
@@ -59,23 +59,3 @@ const Homepage = () => {
 };
 
 export default Homepage;
-
-/*
-
-<div className="homeOptions">
- 
-                <div className="loginEmployee homeOpts" onClick={ () => history.push("/login")}>
-                    Login as employee
-                </div>
-
-                <button className="loginAdmin homeOpts" onClick={ () => history.push("/adminLogin")}>
-                    Login as admin
-                </button>
-
-                <button className="registerEmployee homeOpts" onClick={ () => history.push("/register")}>
-                    Register new employee
-                </button>
-
-            </div>
-
-*/
