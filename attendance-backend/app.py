@@ -100,14 +100,14 @@ def calculate_duration(inTimeVal,outTimeVal):
     final_duration = ((outHour-inHour)*3600 + (outMin-inMin)*60 + outSec-inSec)/3600
     return round(final_duration,3)
  
-def createHashMap () :
+def createDateVsAttendance () :
 
     sqliteConnection = sqlite3.connect('facerec.db')
     cursor = sqliteConnection.cursor()
     sqlite_select_query = """SELECT * from Attendance """
     cursor.execute(sqlite_select_query)
     records = cursor.fetchall()
-    hashMap = {}
+    attendanceRecord = {}
 
     for row in records:
      
@@ -122,78 +122,49 @@ def createHashMap () :
             arrout_day = outTime_array[i].split(",")
   
             activity_chart[arrin_day[0]] = [arrin_day[1],arrout_day[1],calculate_duration(arrin_day[1],arrout_day[1])]
-        hashMap[row[1]] = activity_chart
+        attendanceRecord[row[1]] = activity_chart
  
-    return hashMap
+    return attendanceRecord
 
-
-@app.route('/findUserData', methods=['POST', 'GET'])
-def getUserData(): 
-    data = request.get_json()
-    empno =  data['empno']
-    
-    sqliteConnection = sqlite3.connect('facerec.db')
-    cursor = sqliteConnection.cursor()
-
-    sqlite_select_query = """SELECT * from User where empno=? """
-    cursor.execute(sqlite_select_query,(empno,))
-    
-    empDetail = cursor.fetchone()
-
-    cursor.close()
-
-    sqliteConnection = sqlite3.connect('facerec.db')
-    cursor = sqliteConnection.cursor()
-
-    sqlite_select_query = """SELECT * from Status where empno=? """
-    cursor.execute(sqlite_select_query,(empno,))
-    
-    empStatus = cursor.fetchone()
-    cursor.close()
-
-    hashTable = createHashMap()
-
-    return jsonify({'employeeDetail': empDetail,'attendanceRecord':hashTable[empno] , 'status':empStatus[2]})
-  
 
 @app.route('/register', methods=['POST','GET'])
 def register():
     
     if request.method == 'POST':
 
-        data = request.get_json()
+        registration_form_data = request.get_json()
 
         sqliteConnection = sqlite3.connect('facerec.db')
         cursor = sqliteConnection.cursor()
 
-        x = data['empno']
-
-
+        reg_employee_number = registration_form_data['empno']
         sqlite_select_query = """SELECT * from User where empno=? """
-        cursor.execute(sqlite_select_query,(x,))
+        cursor.execute(sqlite_select_query,(reg_employee_number,))
         
-        records = cursor.fetchall()
+        employeeAlreadyExisting = cursor.fetchall()
         cursor.close()
 
-        if(len(records) == 0) :
-            new_user = User(name = data['name'],password =  data['password'],email = data['email'],date_created =  datetime.now(),empno=data['empno'])
+        if(len(employeeAlreadyExisting) == 0) :
+            new_user = User(name = registration_form_data['name'],password =  registration_form_data['password'],email = registration_form_data['email'],date_created =  datetime.now(),empno=registration_form_data['empno'])
+
             db.session.add(new_user)
             db.session.commit()
-            return jsonify({'empno':'1'})
+
+            return jsonify({'unique_employee_number':'1'})
         else :
-            return({'empno':'0'})    
+            return({'unique_employee_number':'0'})    
 
 @app.route('/clickTrainingImg', methods=['POST', 'GET'])
 def clickTrainingImg():
 
-    data = request.get_json()
-    x = data['image']
-    x = x.split(",")[1]
-    img_data = x	
-    img_data = img_data.encode("ascii")
-    y = (data['empno'])
-    l = len(y)-1
-    z= y[1:l]
+    registration_image_data = request.get_json()
+    img_data_from_backend = registration_image_data['image']
+    img_data_from_backend = img_data_from_backend.split(",")[1]
+    img_data = img_data_from_backend.encode("ascii")	
+
+    empno_from_backend = (registration_image_data['empno'])
+    len_of_string = len(empno_from_backend)-1
+    employee_number= empno_from_backend[1:len_of_string]
 	
     with open("checkValidImage.png", "wb") as fh:
             fh.write(base64.decodebytes(img_data))
@@ -207,36 +178,35 @@ def clickTrainingImg():
     if(len(face_locations) > 1):
         return jsonify({'face_present' : 2})
     
-    with open("Training_images/" + z + ".jpg", "wb") as fh:		
+    imgPath = "Training_images/" + employee_number + ".jpg"   
+    with open(imgPath, "wb") as fh:		
         fh.write(base64.decodebytes(img_data))
-
-    imgPath = "Training_images/" + z + ".jpg"    
 
     curImg = cv2.imread(imgPath)
     images.append(curImg)
-    classNames.append(z)
+    classNames.append(employee_number)
     
     img = cv2.cvtColor(curImg, cv2.COLOR_BGR2RGB)
     encode = face_recognition.face_encodings(img)[0]
     encodeListKnown.append(encode) 
 
-    return jsonify({'face_present' : 1})  
+    return jsonify({'face_present' : 1}) 
 
 @app.route('/markAttendance', methods=['POST', 'GET'])
 def markAttendance():
         data = request.get_json()
-        x = data['image'].split(",")[1]
-        empIden= data['empno']
-        empIden = empIden[1:len(empIden)-1]
+        img_data = data['image'].split(",")[1]
+        employee_number_from_frontend= data['empno']
+        empIden = employee_number_from_frontend[1:len(employee_number_from_frontend)-1]
    
-        img_data = x 
         img_data = img_data.encode("ascii")
         
         percent_accuracy = -1
         with open("imageToSave.png", "wb") as fh:
             fh.write(base64.decodebytes(img_data))
 
-
+        unknown_image = face_recognition.load_image_file("imageToSave.png")
+        
         sqliteConnection = sqlite3.connect('facerec.db')
         cursor = sqliteConnection.cursor()
         sqlite_select_query = """SELECT * from Status where empno=? """
@@ -246,12 +216,18 @@ def markAttendance():
         cursor.close()
 
         if(len(records) == 0) :
-            new_user = Status(empno = empIden, emp_curr_status='in')
-            db.session.add(new_user)
-            db.session.commit()
-             
-        else :
 
+            if(face_identification(unknown_image,empIden)['face_match'] == '1') :
+
+                sqliteConnection = sqlite3.connect('facerec.db')
+                cursor = sqliteConnection.cursor()
+                new_user = Status(empno = empIden, emp_curr_status='in')
+                db.session.add(new_user)
+                db.session.commit()    
+            else:
+                return(jsonify({'attendance_made':'0'}))   
+        
+        else :
             sqliteConnection = sqlite3.connect('facerec.db')
             cursor = sqliteConnection.cursor()
             sqlite_select_query = """SELECT * from Status where empno=? """
@@ -260,76 +236,66 @@ def markAttendance():
             cursor.close()
 
             if(records[0][2] == 'in' ):
-                return jsonify({'login':'2'})
+                return jsonify({'attendance_made':'2'})
             
-        unknown_image = face_recognition.load_image_file("imageToSave.png")
         
-        face_locations = face_recognition.face_locations(unknown_image)
-        face_encodings = face_recognition.face_encodings(unknown_image, face_locations)
         
-        resp = 'Nobody'
-        for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+        face_identification_result =  face_identification(unknown_image,empIden)
+        if(face_identification_result['face_match'] == '0'):
+            return jsonify({'attendance_made':'0'})
 
-            matches = face_recognition.compare_faces(encodeListKnown, face_encoding)
-            name = "Nobody"
-            face_distances = face_recognition.face_distance(encodeListKnown, face_encoding)
-            best_match_index = np.argmin(face_distances)
-             
-            if matches[best_match_index]:
-                resp = classNames[best_match_index]
-                percent_accuracy = face_distance_to_conf(face_distances[best_match_index])*100
+        
 
-        if(empIden == resp) :
+        percent_accuracy =    face_identification_result['percent_accuracy']
+        sqliteConnection = sqlite3.connect('facerec.db')
+        cursor = sqliteConnection.cursor()
+
+        sqlite_select_query = """SELECT * from Attendance where empno=? """
+        cursor.execute(sqlite_select_query,(empIden,))
+        
+        records = cursor.fetchall()
+        cursor.close()
+
+        now = datetime.now()
+        date_time =  now.strftime("%m/%d/%Y, %H:%M:%S")
+        
+        if(len(records) == 0) :
+
+            date_time = date_time + '|'
+            new_log = Attendance(empno=data['empno'][1:len(data['empno'])-1 ], in_time=date_time, out_time='' )
+            db.session.add(new_log)
+            db.session.commit()
+        else:
+            init_intime = records[0][2]
+            sqliteConnection = sqlite3.connect('facerec.db')
+            cursor = sqliteConnection.cursor()
+            sql_update_query = """Update Attendance set in_time = ? where empno = ?"""
+            data = (init_intime + date_time + '|' , empIden)
+            cursor.execute(sql_update_query, data)
+            sqliteConnection.commit()
+            cursor.close()
 
             sqliteConnection = sqlite3.connect('facerec.db')
             cursor = sqliteConnection.cursor()
 
-            sqlite_select_query = """SELECT * from Attendance where empno=? """
-            cursor.execute(sqlite_select_query,(empIden,))
-            
-            records = cursor.fetchall()
+            sql_update_query = """Update Status set emp_curr_status = ? where empno = ?"""
+            data = ('in' , empIden)
+            cursor.execute(sql_update_query, data)
+            sqliteConnection.commit()
             cursor.close()
 
-            now = datetime.now()
-            date_time =  now.strftime("%m/%d/%Y, %H:%M:%S")
-            
-            if(len(records) == 0) :
 
-                date_time = date_time + '|'
-                new_log = Attendance(empno=data['empno'][1:len(data['empno'])-1 ], in_time=date_time, out_time='' )
-                db.session.add(new_log)
-                db.session.commit()
-            else:
-                init_intime = records[0][2]
-                sqliteConnection = sqlite3.connect('facerec.db')
-                cursor = sqliteConnection.cursor()
-                sql_update_query = """Update Attendance set in_time = ? where empno = ?"""
-                data = (init_intime + date_time + '|' , empIden)
-                cursor.execute(sql_update_query, data)
-                sqliteConnection.commit()
-                cursor.close()
+        return jsonify({'attendance_made':'1','percent_accuracy':round(percent_accuracy,3)})
 
-                sqliteConnection = sqlite3.connect('facerec.db')
-                cursor = sqliteConnection.cursor()
-
-                sql_update_query = """Update Status set emp_curr_status = ? where empno = ?"""
-                data = ('in' , empIden)
-                cursor.execute(sql_update_query, data)
-                sqliteConnection.commit()
-                cursor.close()
-
-            return jsonify({'login':'1','percent_accuracy':round(percent_accuracy,3)})
-        else :
-            return jsonify({'login':'0'})
 
 @app.route('/markAttendanceOut', methods=['POST', 'GET'])
 def markAttendanceOut():
 
         data = request.get_json()
-        x = data['image'].split(",")[1]
+        img_data = data['image'].split(",")[1]
         empIden= data['empno']
         empIden = empIden[1:len(empIden)-1]
-        img_data = x
+    
     
         img_data = img_data.encode("ascii")
   
@@ -339,14 +305,13 @@ def markAttendanceOut():
         
         sqliteConnection = sqlite3.connect('facerec.db')
         cursor = sqliteConnection.cursor()
-        x = data['empno']
         sqlite_select_query = """SELECT * from Status where empno=? """
         cursor.execute(sqlite_select_query,(empIden,))        
         records = cursor.fetchall()
         cursor.close()
 
         if(len(records) == 0) : 
-            return jsonify({'login':'2'})
+            return jsonify({'attendance_made':'2'})
              
         else :
             sqliteConnection = sqlite3.connect('facerec.db')
@@ -359,139 +324,129 @@ def markAttendanceOut():
             cursor.close()
 
             if(records[0][2] == 'out' ):
-                return jsonify({'login':'2'})
+                return jsonify({'attendance_made':'2'})
+
         unknown_image = face_recognition.load_image_file("imageToSave.png")
+
+        face_identification_result =  face_identification(unknown_image,empIden)
+        if(face_identification_result['face_match'] == '0'):
+            return jsonify({'attendance_made':'0'})
+
+        percent_accuracy =    face_identification_result['percent_accuracy']
+         
+        sqliteConnection = sqlite3.connect('facerec.db')
+        cursor = sqliteConnection.cursor()
+
+        sqlite_select_query = """SELECT * from Attendance where empno=? """
+        cursor.execute(sqlite_select_query,(empIden,))
         
-        face_locations = face_recognition.face_locations(unknown_image)
-        face_encodings = face_recognition.face_encodings(unknown_image, face_locations)
+        records = cursor.fetchall()
+        cursor.close()
+
+        now = datetime.now()
+        date_time =  now.strftime("%m/%d/%Y, %H:%M:%S")
         
-        resp = 'Nobody'
-        for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+        init_outtime = records[0][3]
+        sqliteConnection = sqlite3.connect('facerec.db')
+        cursor = sqliteConnection.cursor()
 
-            matches = face_recognition.compare_faces(encodeListKnown, face_encoding)
-            name = "Nobody"            
-            face_distances = face_recognition.face_distance(encodeListKnown, face_encoding)
+        sql_update_query = """Update Attendance set out_time = ? where empno = ?"""
+        data = (init_outtime + date_time + '|' , empIden)
+        cursor.execute(sql_update_query, data)
+        sqliteConnection.commit()
+        cursor.close()
             
-            best_match_index = np.argmin(face_distances)
-            
-            if matches[best_match_index]:
-                resp = classNames[best_match_index]
-                percent_accuracy = face_distance_to_conf(face_distances[best_match_index])*100
- 
-        if(empIden == resp) :
+        sqliteConnection = sqlite3.connect('facerec.db')
+        cursor = sqliteConnection.cursor()
 
-            sqliteConnection = sqlite3.connect('facerec.db')
-            cursor = sqliteConnection.cursor()
+        sql_update_query = """Update Status set emp_curr_status = ? where empno = ?"""
+        data = ('out' , empIden)
+        cursor.execute(sql_update_query, data)
+        sqliteConnection.commit()
+        cursor.close()
 
-            sqlite_select_query = """SELECT * from Attendance where empno=? """
-            cursor.execute(sqlite_select_query,(empIden,))
-            
-            records = cursor.fetchall()
-            cursor.close()
+        return jsonify({'attendance_made':'1','percent_accuracy':round(percent_accuracy,3)})
 
-            now = datetime.now()
-            date_time =  now.strftime("%m/%d/%Y, %H:%M:%S")
-            
-            init_outtime = records[0][3]
-            sqliteConnection = sqlite3.connect('facerec.db')
-            cursor = sqliteConnection.cursor()
-
-            sql_update_query = """Update Attendance set out_time = ? where empno = ?"""
-            data = (init_outtime + date_time + '|' , empIden)
-            cursor.execute(sql_update_query, data)
-            sqliteConnection.commit()
-            cursor.close()
-                
-            sqliteConnection = sqlite3.connect('facerec.db')
-            cursor = sqliteConnection.cursor()
-
-            sql_update_query = """Update Status set emp_curr_status = ? where empno = ?"""
-            data = ('out' , empIden)
-            cursor.execute(sql_update_query, data)
-            sqliteConnection.commit()
-            cursor.close()
-
-            return jsonify({'login':'1','percent_accuracy':round(percent_accuracy,3)})
-        
-        else :
-            return jsonify({'login':'0'})
-
-@app.route('/reportForGraph', methods=['GET','POST'])
-def reportForGraph():
- 
-    hashTable = createHashMap()
-    return jsonify(hashTable)
          
 @app.route('/login', methods=['GET','POST'])
 def login():
 
-    data = request.get_json()
-    empIden = data['empno']
+    employee_login_form_data = request.get_json()
+    login_employee_number = employee_login_form_data['empno']
 
     sqliteConnection = sqlite3.connect('facerec.db')
     cursor = sqliteConnection.cursor()
-    x = data['empno']
     sqlite_select_query = """SELECT * from User where empno=? """
-    cursor.execute(sqlite_select_query,(x,))    
-    records = cursor.fetchall()
+    cursor.execute(sqlite_select_query,(login_employee_number,))    
+    employee_in_database = cursor.fetchall()
     cursor.close()
 
-    if(len(records) == 0) : 
-        return jsonify({'poss':'0'})
+    if(len(employee_in_database) == 0) : 
+        return jsonify({'login_successful':'0'})
 
-    empDetail = records[0]
+    employeeDetail = employee_in_database[0]
 
-    my_string=''
-    pathv = "Training_images/" + empIden + ".jpg"
+    profile_image_b64_string=''
+    profileImg_filePath = "Training_images/" + login_employee_number + ".jpg"
 
-    with open(pathv, "rb") as img_file:
-        my_string = base64.b64encode(img_file.read())
+    with open(profileImg_filePath, "rb") as img_file:
+        profile_image_b64_string = base64.b64encode(img_file.read())
     
-    my_string = my_string.decode("utf-8")
+    profile_image_b64_string = profile_image_b64_string.decode("utf-8")
  
-    sqliteConnection = sqlite3.connect('facerec.db')
-    cursor = sqliteConnection.cursor()
- 
-    x = data['empno']
-
-    sqlite_select_query = """SELECT * from Status where empno=? """
-    cursor.execute(sqlite_select_query,(x,))
-    
-    empStatus = cursor.fetchall()
-    if(len(empStatus) != 0):
-        empStatus = empStatus[0]
-    else:
-         empStatus = ['','',''] 
- 
-    result = {
-        'name':empDetail[1] ,
-        'email' : empDetail[3],
-        'empno' : empDetail[2],
-        'doj' : empDetail[5].split(" ")[0],
-        'status' : empStatus[2],
-        'photo' : my_string
-
+    employee_detail_for_frontend = {
+        'name':employeeDetail[1] ,
+        'email' : employeeDetail[3],
+        'empno' : employeeDetail[2],
+        'doj' : employeeDetail[5].split(" ")[0],
+        'photo' : profile_image_b64_string
     }
 
-    if(records[0][4] == data['password'] ) :
-        return jsonify({'poss':'1','employeeDetail':result})
+    if(employeeDetail[4] == employee_login_form_data['password'] ) :
+        return jsonify({'login_successful':'1','employeeDetail':employee_detail_for_frontend})
     else :
-        return jsonify({'poss':'0'})    
+        return jsonify({'login_successful':'0'})    
+
+@app.route('/reportForGraph', methods=['GET','POST'])
+def reportForGraph():
+ 
+    date_vs_employeeAttendance = createDateVsAttendance()
+    return jsonify(date_vs_employeeAttendance)
 
 @app.route('/adminlogin', methods=['GET','POST'])
 def adminlogin():
 
-    data = request.get_json()
-    if(data['empno'] =='admin' and data['password'] == 'admin123' ):
+    admin_login_form_data = request.get_json()
+    if(admin_login_form_data['empno'] =='admin' and admin_login_form_data['password'] == 'admin123' ):
         return jsonify({
-            'ok':'1'
+            'login_successful':'1'
         })
     else :
         return jsonify({
-            'ok':'0'
+            'login_successful':'0'
         })    
 
-    return data
+def face_identification(unknown_image,employee_number) :
+
+    face_locations = face_recognition.face_locations(unknown_image)
+    face_encodings = face_recognition.face_encodings(unknown_image, face_locations)
+    
+    resp = 'Nobody'
+    for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+
+        matches = face_recognition.compare_faces(encodeListKnown, face_encoding)
+        face_distances = face_recognition.face_distance(encodeListKnown, face_encoding)
+        best_match_index = np.argmin(face_distances)
+            
+        if matches[best_match_index]:
+            resp = classNames[best_match_index]
+            percent_accuracy = face_distance_to_conf(face_distances[best_match_index])*100
+
+    if(employee_number == resp) :
+        return {'face_match':'1','percent_accuracy':round(percent_accuracy,3)}
+    else :
+        return {'face_match':'0'}
+
 
 if __name__ == "__main__":
     app.run(debug=True)
