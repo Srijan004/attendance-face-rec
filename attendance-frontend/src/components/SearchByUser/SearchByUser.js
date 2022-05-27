@@ -47,9 +47,9 @@ const SearchByUser = () => {
         var mymd = [];
 
         var currUser = data[empNo];
-        if(currUser == undefined) {
+        if (currUser == undefined) {
           setMD([]);
-          return; 
+          return;
         }
 
         var dtArr = getDaysArray(startDate, endDate);
@@ -72,7 +72,7 @@ const SearchByUser = () => {
           if (currUser[MyDateString]) {
             mymd.push({
               date: MyDateString,
-              "Attendance": "Present",
+              Attendance: "Present",
               "in-time": v[0],
               "out-time": v[1],
               duration: v[2],
@@ -80,7 +80,7 @@ const SearchByUser = () => {
           } else {
             mymd.push({
               date: MyDateString,
-              "Attendance": "Absent",
+              Attendance: "Absent",
               "in-time": "-",
               "out-time": "-",
               duration: "-",
@@ -138,14 +138,12 @@ const SearchByUser = () => {
   return (
     <div className="searchByUser">
       <h2 className="dataByDateHead">
-        Choose a Date to get the attendees and their details  of a particular
+        Choose a Date to get the attendees and their details of a particular
         date
       </h2>
 
       <div className="datepickerDivByUser">
-
         <div className="datepickerDivInsideByUser">
-
           <h3>Choose Start Date</h3>
 
           <div>
@@ -176,22 +174,22 @@ const SearchByUser = () => {
         </div>
 
         <div className="datepickerDivInside">
-        <h3>Employee Number</h3>
+          <h3>Employee Number</h3>
 
-            <input
-              type="text"
-              className="datepicker"
-              placeholder="Enter Employee Number"
-              value={empNo}
-              onChange={(e) => setEmpNo(e.target.value)}
-            />
-          </div>
+          <input
+            type="text"
+            className="datepicker"
+            placeholder="Enter Employee Number"
+            value={empNo}
+            onChange={(e) => setEmpNo(e.target.value)}
+          />
+        </div>
         <button className="reportButtonByUser" onClick={reporter}>
           Get Attendance Report
         </button>
       </div>
 
-      {(startDate && endDate &&  MOCK_DATA.length) ? (
+      {startDate && endDate && MOCK_DATA.length ? (
         <div className="employeeTableByUser">
           <table>
             <tr>
@@ -215,15 +213,13 @@ const SearchByUser = () => {
             ))}
           </table>
         </div>
-      )
-    :
-    <div></div>
-    }
+      ) : (
+        <div></div>
+      )}
 
       <br />
 
-      {
-      (startDate && endDate && MOCK_DATA.length) ? (
+      {startDate && endDate && MOCK_DATA.length ? (
         <div className="barchartByUser">
           <Bar
             data={{
@@ -257,11 +253,9 @@ const SearchByUser = () => {
             }}
           />
         </div>
-      )
-    :
-    <div className="noData">No data available !!</div>
-    }
- 
+      ) : (
+        <div className="noData">No data available !!</div>
+      )}
     </div>
   );
 };

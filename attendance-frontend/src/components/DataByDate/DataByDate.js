@@ -44,11 +44,10 @@ const DataByDate = () => {
   return (
     <>
       <h2 className="dataByDateHead">
-        Choose a Date to get the attendees and their details  of a particular
+        Choose a Date to get the attendees and their details of a particular
         date
       </h2>
 
-    
       <div className="dataByDateInputs">
         <DatePicker
           className="datepicker marginTop"
@@ -63,48 +62,35 @@ const DataByDate = () => {
         </button>
       </div>
 
+      {dar && dar.length == 0 && (
+        <div className="noData">No data available for this date</div>
+      )}
 
-{
-(dar && dar.length == 0  ) && (
-  <div className="noData">No data available for this date</div>
-)
+      {chosenDate && dar.length ? (
+        <div>
+          <table className="marginBottom">
+            <tr>
+              <th>EmpNo</th>
+              <th>Entry Time</th>
+              <th>Exit Time</th>
+              <th>Duration</th>
+            </tr>
 
-}
-       
-
-      {
-        (chosenDate &&  dar.length) ?  
-     ( 
-      <div>
-        <table className="marginBottom">
-          <tr>
-            <th>EmpNo</th>
-            <th>Entry Time</th>
-            <th>Exit Time</th>
-            <th>Duration</th>
-          </tr>
-
-          {dar.map((row) => (
-            <>
-              <tr>
-                <td> {row[0]} </td>
-                <td> {row[1][0]} </td>
-                <td> {row[1][1]} </td>
-                <td> {row[1][2]} </td>
-              </tr>
-            </>
-          ))}
-        </table>
-      </div>
-  ) :(
-  <div></div>
-      )
-
-
-      
-      }
-
-
+            {dar.map((row) => (
+              <>
+                <tr>
+                  <td> {row[0]} </td>
+                  <td> {row[1][0]} </td>
+                  <td> {row[1][1]} </td>
+                  <td> {row[1][2]} </td>
+                </tr>
+              </>
+            ))}
+          </table>
+        </div>
+      ) : (
+        <div></div>
+      )}
     </>
   );
 };

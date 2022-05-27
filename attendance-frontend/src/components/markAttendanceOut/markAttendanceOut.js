@@ -32,7 +32,6 @@ const MarkAttendanceOut = () => {
       }),
     }).then((res) =>
       res.json().then((data) => {
-
         console.log("Huo getUser resp : ", data);
 
         if (data["attendance_made"] == 0) {
@@ -46,7 +45,9 @@ const MarkAttendanceOut = () => {
         }
 
         if (data["attendance_made"] == 1) {
-          alert(`Attendce made !! You have been identified with ${data['percent_accuracy']}% accuracy`);
+          alert(
+            `Attendce made !! You have been identified with ${data["percent_accuracy"]}% accuracy`
+          );
         }
       })
     );

@@ -33,7 +33,6 @@ const AdminLogin = () => {
       body: JSON.stringify(user),
     }).then((res) =>
       res.json().then((data) => {
-      
         console.log("Huo getUser resp : ", data);
 
         if (data["login_successful"] == 0) {
@@ -41,11 +40,11 @@ const AdminLogin = () => {
           window.location.reload();
         } else {
           const admin = {
-            'admin' : 5
-          }
+            admin: 5,
+          };
 
           localStorage.setItem("Admin", JSON.stringify(admin));
- 
+
           history.push("/report");
         }
       })

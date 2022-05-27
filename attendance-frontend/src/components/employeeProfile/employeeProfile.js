@@ -22,7 +22,9 @@ const BarChart = () => {
   console.log(JSON.parse(localStorage.getItem("userDetail")));
   var detail = JSON.parse(localStorage.getItem("userDetail"));
 
-  if(detail) {var imgsrc = "data:image/png;base64," + detail.photo;}
+  if (detail) {
+    var imgsrc = "data:image/png;base64," + detail.photo;
+  }
   var [dar, setdar] = useState([]);
 
   const [labels, setLabels] = useState(null);
@@ -54,11 +56,11 @@ const BarChart = () => {
         var mymd = [];
 
         var currUser = data[detail.empno];
-        
+
         // var currUser = data[empNo];
-        if(currUser == undefined) {
+        if (currUser == undefined) {
           setMD([]);
-          return; 
+          return;
         }
 
         var dtArr = getDaysArray(startDate, endDate);
@@ -198,8 +200,7 @@ const BarChart = () => {
             </button>
           </div>
 
-          {
-          (startDate && endDate && MOCK_DATA.length) ? (
+          {startDate && endDate && MOCK_DATA.length ? (
             <div className="employeeTable">
               <table>
                 <tr>
@@ -223,16 +224,13 @@ const BarChart = () => {
                 ))}
               </table>
             </div>
-          )
-        :
-        <div></div>
-        }
+          ) : (
+            <div></div>
+          )}
 
           <br />
 
-          {
-          
-          (startDate && endDate && MOCK_DATA.length) ? (
+          {startDate && endDate && MOCK_DATA.length ? (
             <div className="barchart">
               <Bar
                 data={{
@@ -266,9 +264,9 @@ const BarChart = () => {
                 }}
               />
             </div>
-          )
-        :
-<div className="noData margin_left">No data available !!</div>        }
+          ) : (
+            <div className="noData margin_left">No data available !!</div>
+          )}
 
           <div>
             <div>

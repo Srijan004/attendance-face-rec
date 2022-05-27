@@ -19,43 +19,39 @@ const ClickTraining = () => {
     const imageSrc = webcamRef.current.getScreenshot();
     console.log(`imageSrc = ${imageSrc}`);
 
-    fetch("/clickTrainingImg",
-    {
-                'method':'POST',
-                 headers : {
-                'Content-Type':'application/json'
-          },
-          body:JSON.stringify( {
-            image: imageSrc,
-            empno: localStorage.getItem("MyUser"),
-          })
-        }
-    ).then((res) =>
-    res.json().then((data) => {
+    fetch("/clickTrainingImg", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image: imageSrc,
+        empno: localStorage.getItem("MyUser"),
+      }),
+    }).then((res) =>
+      res.json().then((data) => {
+        console.log("Huo getUser resp : ", data);
 
-        console.log("Huo getUser resp : ", data)
-
-        if(data['face_present'] == 0) {
+        if (data["face_present"] == 0) {
           alert("Please click a clear image !!");
         }
 
-        if(data['face_present'] == 2) {
-          alert("Your registration image must have a single person !! Click a solo picture of yours.");
+        if (data["face_present"] == 2) {
+          alert(
+            "Your registration image must have a single person !! Click a solo picture of yours."
+          );
         }
 
-         if(data['face_present'] == 1) {
+        if (data["face_present"] == 1) {
           localStorage.setItem("MyUser", JSON.stringify({}));
-         alert("Image saved to the database")  ;
-         history.push("/");
+          alert("Image saved to the database");
+          history.push("/");
         }
-    })
-);
-
+      })
+    );
   }, [webcamRef]);
 
   return (
-
-    
     <div className="webcamPageFull">
       <div className="adminLoginNavbar">
         <img
@@ -66,25 +62,31 @@ const ClickTraining = () => {
         />
       </div>
 
-<div className="webcamMain">
+      <div className="webcamMain">
+        <div className="webcamInstruction">
+          <h2>
+            You are almost there. Click your photo using the button below. This
+            photo will be stored
+          </h2>
+          <h2>
+            in the database and will be used for matching whenever you mark your
+            attendance.{" "}
+          </h2>
+        </div>
 
-<div className="webcamInstruction">
-<h2>You are almost there. Click your photo using the button below. This photo will be stored</h2>
-<h2>in the database and will be used for matching whenever you mark your attendance. </h2>
-</div>
-  
-      <Webcam
-        className="webcam"
-        audio={false}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        videoConstraints={videoConstraints}
-      />
+        <Webcam
+          className="webcam"
+          audio={false}
+          ref={webcamRef}
+          screenshotFormat="image/jpeg"
+          videoConstraints={videoConstraints}
+        />
 
-      <button className="webcamButton" onClick={capture}>Click regristration image</button>
-   
+        <button className="webcamButton" onClick={capture}>
+          Click regristration image
+        </button>
+      </div>
     </div>
-</div>
   );
 };
 

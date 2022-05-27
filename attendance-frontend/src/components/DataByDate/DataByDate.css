@@ -1,39 +1,30 @@
-.dataByDateHead{
-    color: red;
-    margin-bottom: 32px;
-
+.dataByDateHead {
+  color: red;
+  margin-bottom: 32px;
 }
 
-.dataByDateInputs{
-    width: 600px;
-    height: 100px;
-    /* background-color: aquamarine; */
-    display: flex;
-    flex-direction: row;
- 
-
+.dataByDateInputs {
+  width: 600px;
+  height: 100px;
+  display: flex;
+  flex-direction: row;
 }
 
 .reportButtonByDate {
-    background-color: #00babe;
-    color: white;
-    width: 415px;
-    height: 45px;
-    
-    /* background: #1877f2; */
-    /* color: #fff; */
-    font-size: 1.25rem;
- 
- 
-    border-radius: 8px;
-    outline: none;
-    cursor: pointer;
+  background-color: #00babe;
+  color: white;
+  width: 415px;
+  height: 45px;
+  font-size: 1.25rem;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
 }
 
-.marginTop{
-    margin-top: 3px;
+.marginTop {
+  margin-top: 3px;
 }
 
-.marginBottom{
-    margin-bottom: 40px;
+.marginBottom {
+  margin-bottom: 40px;
 }
