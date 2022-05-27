@@ -14,6 +14,10 @@ const DataByDate = () => {
     }).then((res) =>
       res.json().then((data) => {
         var darx = [];
+        if(data['message']) {
+          alert(data['message']);
+          window.location.reload();
+        }
 
         var dateUc = getFormattedDate(chosenDate);
 

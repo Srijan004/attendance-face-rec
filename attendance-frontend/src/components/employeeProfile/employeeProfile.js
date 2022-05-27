@@ -54,7 +54,11 @@ const BarChart = () => {
 
         var myHash = {};
         var mymd = [];
-
+        
+        if(data['message']) {
+          alert(data['message']);
+          window.location.reload();
+        }
         var currUser = data[detail.empno];
 
         // var currUser = data[empNo];

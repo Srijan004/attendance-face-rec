@@ -42,7 +42,11 @@ const SearchByUser = () => {
     }).then((res) =>
       res.json().then((data) => {
         console.log("hash data from flask : ", data);
-
+        if(data['message']) {
+          alert(data['message']);
+          window.location.reload();
+        }
+        
         var myHash = {};
         var mymd = [];
 
