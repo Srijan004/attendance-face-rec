@@ -1,15 +1,13 @@
-.accessDenied{
-    width: 1516px;
-    height: 449px;
-    /* background-color: aqua; */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+.accessDenied {
+  width: 1516px;
+  height: 449px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.accessDeniedImg{
-    width: 815px;
-    height: 390px;
-
+.accessDeniedImg {
+  width: 815px;
+  height: 390px;
 }
