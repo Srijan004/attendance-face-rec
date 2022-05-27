@@ -36,7 +36,7 @@ const AdminLogin = () => {
       
         console.log("Huo getUser resp : ", data);
 
-        if (data["ok"] == 0) {
+        if (data["login_successful"] == 0) {
           alert("Not an admin !!");
           window.location.reload();
         } else {

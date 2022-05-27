@@ -36,17 +36,17 @@ const MarkAttendance = () => {
 
         console.log("Huo getUser resp : ", data)
         
-        if(data['login'] == 2) {
+        if(data['attendance_made'] == 2) {
           alert("You're already in. ");
         }
 
-        if(data['login'] == 0) {
+        if(data['attendance_made'] == 0) {
             
             alert("Please retry. Your attendance couldn't be made !!");
             localStorage.setItem("MyUser", JSON.stringify({}));
             history.push("/login");
             
-        } if(data['login'] == 1) {
+        } if(data['attendance_made'] == 1) {
           alert(`Attendce made !! You have been identified with ${data['percent_accuracy']}% accuracy`);
         }
 

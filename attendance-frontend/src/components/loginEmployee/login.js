@@ -47,7 +47,7 @@ const Login = ({ updateUser}) => {
 
             console.log("-1",user,"-2", user.empno)
 
-            if(data['poss'] == 0) {
+            if(data['login_successful'] == 0) {
                 
                 alert("invalid credentials")
 

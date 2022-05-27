@@ -43,9 +43,7 @@ const Register = () => {
             ).then((res) =>
             res.json().then((data) => {
     
-                console.log("Huo getUser resp : ", data)
-
-                if(data['empno'] == 0) {
+                if(data['unique_employee_number'] == 0) {
                     
                     alert("An employee with this employee number already exists in the database. Employee Number is unique for an employee")
 
@@ -64,16 +62,6 @@ const Register = () => {
     } else alert("Please enter valid data !!")
             
     }
-
-    useEffect(() => {
-
-        fetch("/getUser").then((res) =>
-            res.json().then((data) => {
-
-                console.log("Huo getUser resp : ", data['Age'])
-            })
-        );
-    }, []);
 
     return (
 
