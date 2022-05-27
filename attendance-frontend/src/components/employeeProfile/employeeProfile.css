@@ -224,3 +224,7 @@ table {
 table td {
     border: 2px solid #00babe;
 }
+
+.margin_left{
+    margin-left: 190px;
+}

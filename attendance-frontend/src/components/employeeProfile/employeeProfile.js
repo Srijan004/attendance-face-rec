@@ -54,6 +54,13 @@ const BarChart = () => {
         var mymd = [];
 
         var currUser = data[detail.empno];
+        
+        // var currUser = data[empNo];
+        if(currUser == undefined) {
+          setMD([]);
+          return; 
+        }
+
         var dtArr = getDaysArray(startDate, endDate);
         for (var i = 0; i < dtArr.length; i++) {
           var MyDate = dtArr[i];
@@ -191,7 +198,8 @@ const BarChart = () => {
             </button>
           </div>
 
-          {startDate && endDate && MOCK_DATA.length && (
+          {
+          (startDate && endDate && MOCK_DATA.length) ? (
             <div className="employeeTable">
               <table>
                 <tr>
@@ -215,11 +223,16 @@ const BarChart = () => {
                 ))}
               </table>
             </div>
-          )}
+          )
+        :
+        <div></div>
+        }
 
           <br />
 
-          {startDate && endDate && MOCK_DATA.length && (
+          {
+          
+          (startDate && endDate && MOCK_DATA.length) ? (
             <div className="barchart">
               <Bar
                 data={{
@@ -253,7 +266,9 @@ const BarChart = () => {
                 }}
               />
             </div>
-          )}
+          )
+        :
+<div className="noData margin_left">No data available !!</div>        }
 
           <div>
             <div>
