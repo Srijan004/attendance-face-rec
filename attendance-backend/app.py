@@ -115,7 +115,9 @@ def createDateVsAttendance () :
 
         inTime_array = row[2].split("|")
         outTime_array = row[3].split("|")
-
+        if(len(inTime_array) != len(outTime_array)):
+            return {'message': 'You can access the data only if all employees have marked their out attendance for a day.'}
+            
         for i in range(0,(len(inTime_array)-1)):
 
             arrin_day = inTime_array[i].split(",")
@@ -198,7 +200,7 @@ def markAttendance():
         img_data = data['image'].split(",")[1]
         employee_number_from_frontend= data['empno']
         empIden = employee_number_from_frontend[1:len(employee_number_from_frontend)-1]
-   
+        
         img_data = img_data.encode("ascii")
         
         percent_accuracy = -1
@@ -206,6 +208,7 @@ def markAttendance():
             fh.write(base64.decodebytes(img_data))
 
         unknown_image = face_recognition.load_image_file("imageToSave.png")
+
         
         sqliteConnection = sqlite3.connect('facerec.db')
         cursor = sqliteConnection.cursor()
