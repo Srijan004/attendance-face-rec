@@ -3,11 +3,11 @@ import { useHistory } from "react-router-dom";
 import "./report.css";
 import ByDate from "../DataByDate/DataByDate";
 import logo from "../../images/newLogoSmall.PNG";
-import AdminLogin from "../loginAdmin/AdminLogin";
 import SearchByUser from "../SearchByUser/SearchByUser";
 import AccessDenied from "../AccessDenied/AccessDenied";
+import toast, { Toaster } from "react-hot-toast";
 
-function Tabs() {
+const Tabs = () => {
   const adminCheck = JSON.parse(localStorage.getItem("Admin"));
 
   const [toggleState, setToggleState] = useState(1);
@@ -18,6 +18,7 @@ function Tabs() {
 
   return adminCheck && adminCheck.admin ? (
     <>
+      <Toaster />
       <div className="employeeDashboardNavbar">
         <img
           src={logo}
@@ -79,6 +80,6 @@ function Tabs() {
   ) : (
     <AccessDenied />
   );
-}
+};
 
 export default Tabs;

@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import Webcam from "react-webcam";
-
-import axios from "axios";
 import { useHistory } from "react-router-dom";
 import "./login.css";
-
 import logo from "../../images/newLogoSmall.PNG";
 import employeeLogo from "../../images/employeeLogo.png";
-const Login = ({ updateUser }) => {
+import toast, { Toaster } from "react-hot-toast";
+
+const Login = () => {
   const history = useHistory();
 
   const [user, setUser] = useState({
@@ -22,7 +20,6 @@ const Login = ({ updateUser }) => {
       [name]: value,
     });
 
-    console.log(user);
   };
 
   const login = () => {
@@ -34,16 +31,9 @@ const Login = ({ updateUser }) => {
       body: JSON.stringify(user),
     }).then((res) =>
       res.json().then((data) => {
-        console.log("New Daata : ", data);
-
-        console.log("-1", user, "-2", user.empno);
 
         if (data["login_successful"] == 0) {
-          alert("invalid credentials");
-
-          setUser({});
-
-          window.location.reload();
+          toast.error("invalid credentials");
         } else {
           localStorage.setItem("MyUser", JSON.stringify(user.empno));
           localStorage.setItem(
@@ -58,6 +48,7 @@ const Login = ({ updateUser }) => {
   };
   return (
     <div className="admLogFull">
+      <Toaster />
       <div className="adminLoginNavbar">
         <img
           src={logo}

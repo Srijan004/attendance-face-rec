@@ -4,7 +4,6 @@ import logo from "../../images/newLogoSmall.PNG";
 import entryIcon from "../../images/employeeEntering.png";
 import exitIcon from "../../images/employeeExiting.png";
 import viewProfile from "../../images/profileIcon.png";
-import Login from "../loginEmployee/login";
 import AccessDenied from "../AccessDenied/AccessDenied";
 
 const Employee = () => {

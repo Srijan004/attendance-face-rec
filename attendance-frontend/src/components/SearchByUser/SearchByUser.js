@@ -1,37 +1,24 @@
-import React, { useMemo } from "react";
-import { useTable } from "react-table";
-import { Bar, Pie, Line, Doughnut } from "react-chartjs-2";
-import { useState, useEffect } from "react";
+import { Bar } from "react-chartjs-2";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "chart.js/auto";
 import { Chart } from "react-chartjs-2";
-import { format } from "date-fns";
 import "./searchByUser.css";
+import toast, { Toaster } from 'react-hot-toast';
 
 <Chart type="line" />;
 
 const SearchByUser = () => {
-  console.log(JSON.parse(localStorage.getItem("userDetail")));
-  var detail = JSON.parse(localStorage.getItem("userDetail"));
-
-  var [dar, setdar] = useState([]);
-
+ 
   const [labels, setLabels] = useState([]);
   const [datavals, setDatavals] = useState([]);
 
-  var [MOCK_DATA, setMD] = useState([]);
-  const [chosenDate, setChosenDate] = useState(null);
-
+  var [tableContent, setTableContent] = useState([]);
+ 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [empNo, setEmpNo] = useState("");
-
-  const [arr_in, setAin] = useState([]);
-  const [arr_out, setAout] = useState([]);
-
-  const [final, setFinal] = useState([]);
-  var obf = [];
 
   const reporter = () => {
     fetch("/reportForGraph", {
@@ -41,19 +28,18 @@ const SearchByUser = () => {
       },
     }).then((res) =>
       res.json().then((data) => {
-        console.log("hash data from flask : ", data);
         if(data['message']) {
           alert(data['message']);
           window.location.reload();
         }
-        
+
         var myHash = {};
         var mymd = [];
 
         var currUser = data[empNo];
-        if (currUser == undefined) {
-          setMD([]);
-          return;
+        if(currUser == undefined) {
+          setTableContent([]);
+          return; 
         }
 
         var dtArr = getDaysArray(startDate, endDate);
@@ -76,7 +62,7 @@ const SearchByUser = () => {
           if (currUser[MyDateString]) {
             mymd.push({
               date: MyDateString,
-              Attendance: "Present",
+              "Attendance": "Present",
               "in-time": v[0],
               "out-time": v[1],
               duration: v[2],
@@ -84,7 +70,7 @@ const SearchByUser = () => {
           } else {
             mymd.push({
               date: MyDateString,
-              Attendance: "Absent",
+              "Attendance": "Absent",
               "in-time": "-",
               "out-time": "-",
               duration: "-",
@@ -92,14 +78,9 @@ const SearchByUser = () => {
           }
         }
 
-        setMD(mymd);
-        console.log("MYMD:", mymd);
-
-        console.log("my hash table : ", myHash);
-
+        setTableContent(mymd);
         setLabels(Object.keys(myHash));
         setDatavals(Object.values(myHash));
-        console.log("akm : ", labels, datavals);
       })
     );
   };
@@ -115,39 +96,18 @@ const SearchByUser = () => {
     return arr;
   };
 
-  const bydate = () => {
-    fetch("/reportForGraph", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) =>
-      res.json().then((data) => {
-        var darx = [];
-
-        console.log("hash data from flask : ", Object.keys(data));
-        let arx = Object.keys(data);
-        for (var x = 0; x < arx.length; x++) {
-          console.log(arx[x]);
-          if (data[arx[x]][chosenDate])
-            darx.push([arx[x], data[arx[x]][chosenDate]]);
-        }
-
-        console.log("dar value :", darx);
-        setdar(darx);
-      })
-    );
-  };
-
   return (
     <div className="searchByUser">
+  
       <h2 className="dataByDateHead">
-        Choose a Date to get the attendees and their details of a particular
+        Choose a Date to get the attendees and their details  of a particular
         date
       </h2>
 
       <div className="datepickerDivByUser">
+
         <div className="datepickerDivInsideByUser">
+
           <h3>Choose Start Date</h3>
 
           <div>
@@ -178,22 +138,22 @@ const SearchByUser = () => {
         </div>
 
         <div className="datepickerDivInside">
-          <h3>Employee Number</h3>
+        <h3>Employee Number</h3>
 
-          <input
-            type="text"
-            className="datepicker"
-            placeholder="Enter Employee Number"
-            value={empNo}
-            onChange={(e) => setEmpNo(e.target.value)}
-          />
-        </div>
+            <input
+              type="text"
+              className="datepicker"
+              placeholder="Enter Employee Number"
+              value={empNo}
+              onChange={(e) => setEmpNo(e.target.value)}
+            />
+          </div>
         <button className="reportButtonByUser" onClick={reporter}>
           Get Attendance Report
         </button>
       </div>
 
-      {startDate && endDate && MOCK_DATA.length ? (
+      {(startDate && endDate &&  tableContent.length) ? (
         <div className="employeeTableByUser">
           <table>
             <tr>
@@ -204,7 +164,7 @@ const SearchByUser = () => {
               <th>Duration</th>
             </tr>
 
-            {MOCK_DATA.map((row) => (
+            {tableContent.map((row) => (
               <>
                 <tr>
                   <td> {row["date"]} </td>
@@ -217,13 +177,15 @@ const SearchByUser = () => {
             ))}
           </table>
         </div>
-      ) : (
-        <div></div>
-      )}
+      )
+    :
+    <div></div>
+    }
 
       <br />
 
-      {startDate && endDate && MOCK_DATA.length ? (
+      {
+      (startDate && endDate && tableContent.length) ? (
         <div className="barchartByUser">
           <Bar
             data={{
@@ -257,9 +219,11 @@ const SearchByUser = () => {
             }}
           />
         </div>
-      ) : (
-        <div className="noData">No data available !!</div>
-      )}
+      )
+    :
+    <div className="noData">No data available !!</div>
+    }
+ 
     </div>
   );
 };

@@ -1,6 +1,7 @@
 .accessDenied {
   width: 1516px;
   height: 449px;
+  /* background-color: aqua; */
   display: flex;
   flex-direction: column;
   align-items: center;

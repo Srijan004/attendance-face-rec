@@ -1,46 +1,32 @@
-import React, { useMemo } from "react";
-import { useTable } from "react-table";
-import { Bar, Pie, Line, Doughnut } from "react-chartjs-2";
-import { useState, useEffect } from "react";
+import React from "react";
+import { Bar} from "react-chartjs-2";
+import { useState} from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "chart.js/auto";
 import { Chart } from "react-chartjs-2";
-import { format } from "date-fns";
 import logo from "../../images/newLogoSmall.PNG";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import "./employeeProfile.css";
-import { Profiler } from "react/cjs/react.production.min";
-import Login from "../loginEmployee/login";
 import AccessDenied from "../AccessDenied/AccessDenied";
+import toast, { Toaster } from 'react-hot-toast';
 
 <Chart type="line" />;
 
 const BarChart = () => {
   const loginCheck = JSON.parse(localStorage.getItem("userDetail"));
   const history = useHistory();
-  console.log(JSON.parse(localStorage.getItem("userDetail")));
   var detail = JSON.parse(localStorage.getItem("userDetail"));
 
-  if (detail) {
-    var imgsrc = "data:image/png;base64," + detail.photo;
-  }
-  var [dar, setdar] = useState([]);
-
+  if(detail) {var imgsrc = "data:image/png;base64," + detail.photo;}
+ 
   const [labels, setLabels] = useState(null);
   const [datavals, setDatavals] = useState([]);
 
-  var [MOCK_DATA, setMD] = useState([]);
+  var [contentTable, setContentTable] = useState([]);
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [empNo, setEmpNo] = useState("tvo-2801");
-
-  const [arr_in, setAin] = useState([]);
-  const [arr_out, setAout] = useState([]);
-
-  const [final, setFinal] = useState([]);
-  var obf = [];
 
   const reporter = () => {
     fetch("/reportForGraph", {
@@ -50,21 +36,18 @@ const BarChart = () => {
       },
     }).then((res) =>
       res.json().then((data) => {
-        console.log("hash data from flask : ", data);
-
         var myHash = {};
-        var mymd = [];
-        
+        var contentTable_temp = [];
+
         if(data['message']) {
-          alert(data['message']);
-          window.location.reload();
+          toast.error(data['message']);
+          return;
         }
         var currUser = data[detail.empno];
-
-        // var currUser = data[empNo];
-        if (currUser == undefined) {
-          setMD([]);
-          return;
+       
+        if(currUser == undefined) {
+          setContentTable([]);
+          return; 
         }
 
         var dtArr = getDaysArray(startDate, endDate);
@@ -85,7 +68,7 @@ const BarChart = () => {
           let v = currUser[MyDateString];
 
           if (currUser[MyDateString]) {
-            mymd.push({
+            contentTable_temp.push({
               date: MyDateString,
               Attendance: "Present",
               "in-time": v[0],
@@ -93,7 +76,7 @@ const BarChart = () => {
               duration: v[2],
             });
           } else {
-            mymd.push({
+            contentTable_temp.push({
               date: MyDateString,
               Attendance: "Absent",
               "in-time": "-",
@@ -103,14 +86,9 @@ const BarChart = () => {
           }
         }
 
-        setMD(mymd);
-        console.log("MYMD:", mymd);
-
-        console.log("my hash table : ", myHash);
-
+        setContentTable(contentTable_temp);
         setLabels(Object.keys(myHash));
         setDatavals(Object.values(myHash));
-        console.log("akm : ", labels, datavals);
       })
     );
   };
@@ -128,6 +106,7 @@ const BarChart = () => {
 
   return (
     <>
+    <Toaster/>
       {loginCheck && loginCheck.empno ? (
         <div>
           <div className="employeeDashboardNavbar">
@@ -204,7 +183,8 @@ const BarChart = () => {
             </button>
           </div>
 
-          {startDate && endDate && MOCK_DATA.length ? (
+          {
+          (startDate && endDate && contentTable.length) ? (
             <div className="employeeTable">
               <table>
                 <tr>
@@ -215,7 +195,7 @@ const BarChart = () => {
                   <th>Duration</th>
                 </tr>
 
-                {MOCK_DATA.map((row) => (
+                {contentTable.map((row) => (
                   <>
                     <tr>
                       <td> {row["date"]} </td>
@@ -228,13 +208,16 @@ const BarChart = () => {
                 ))}
               </table>
             </div>
-          ) : (
-            <div></div>
-          )}
+          )
+        :
+        <div></div>
+        }
 
           <br />
 
-          {startDate && endDate && MOCK_DATA.length ? (
+          {
+          
+          (startDate && endDate && contentTable.length) ? (
             <div className="barchart">
               <Bar
                 data={{
@@ -268,9 +251,9 @@ const BarChart = () => {
                 }}
               />
             </div>
-          ) : (
-            <div className="noData margin_left">No data available !!</div>
-          )}
+          )
+        :
+<div className="noData margin_left">No data available !!</div>        }
 
           <div>
             <div>

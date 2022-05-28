@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import Webcam from "react-webcam";
 import { useHistory } from "react-router-dom";
 import "./clickTraining.css";
 import logo from "../../images/newLogoSmall.PNG";
+import toast, { Toaster } from "react-hot-toast";
 
 const ClickTraining = () => {
   const history = useHistory();
@@ -17,8 +17,7 @@ const ClickTraining = () => {
   const [name, setName] = useState("");
   const capture = React.useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
-    console.log(`imageSrc = ${imageSrc}`);
-
+ 
     fetch("/clickTrainingImg", {
       method: "POST",
       headers: {
@@ -30,22 +29,21 @@ const ClickTraining = () => {
       }),
     }).then((res) =>
       res.json().then((data) => {
-        console.log("Huo getUser resp : ", data);
 
         if (data["face_present"] == 0) {
-          alert("Please click a clear image !!");
+          toast.error("Please click a clear image !!");
         }
 
         if (data["face_present"] == 2) {
-          alert(
+          toast.error(
             "Your registration image must have a single person !! Click a solo picture of yours."
           );
         }
 
         if (data["face_present"] == 1) {
           localStorage.setItem("MyUser", JSON.stringify({}));
-          alert("Image saved to the database");
-          history.push("/");
+
+          toast.success("Registration Successful. The image is saved in the backend.");
         }
       })
     );
@@ -53,6 +51,8 @@ const ClickTraining = () => {
 
   return (
     <div className="webcamPageFull">
+      <Toaster />
+
       <div className="adminLoginNavbar">
         <img
           src={logo}

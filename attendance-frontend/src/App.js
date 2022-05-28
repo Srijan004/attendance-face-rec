@@ -13,6 +13,7 @@ import AdminLogin from "./components/loginAdmin/AdminLogin";
 import MarkAttendanceOut from "./components/markAttendanceOut/markAttendanceOut";
 import DataByDate from "./components/DataByDate/DataByDate";
 import Tabs from "./components/report/report";
+
 import "./App.css";
 function App() {
   return (

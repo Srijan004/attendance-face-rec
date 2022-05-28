@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState} from "react";
 import { useHistory } from "react-router-dom";
 import "./register.css";
-
 import logo from "../../images/newLogoSmall.PNG";
 import employeeLogo from "../../images/addEmployeeRegPage0.png";
-const Register = () => {
-  const history = useHistory();
+import toast, { Toaster } from "react-hot-toast";
 
+const Register = () => {
+  const regexExpForEmail =
+    /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+  const regexExpForPw =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
+  const history = useHistory();
   const [user, setUser] = useState({
     name: "",
     empno: "",
@@ -26,7 +30,14 @@ const Register = () => {
 
   const register = () => {
     const { name, empno, email, password, reEnterPassword } = user;
-    if (name && email && password && password === reEnterPassword && empno) {
+    if (
+      name &&
+      regexExpForPw.test(password) &&
+      regexExpForEmail.test(email) &&
+      password &&
+      password === reEnterPassword &&
+      empno
+    ) {
       fetch("/register", {
         method: "POST",
         headers: {
@@ -36,24 +47,34 @@ const Register = () => {
       }).then((res) =>
         res.json().then((data) => {
           if (data["unique_employee_number"] == 0) {
-            alert(
+            toast.error(
               "An employee with this employee number already exists in the database. Employee Number is unique for an employee"
             );
-
-            setUser({});
-
-            window.location.reload();
           } else {
             localStorage.setItem("MyUser", JSON.stringify(user.empno));
             history.push("/clickTraining");
           }
         })
       );
-    } else alert("Please enter valid data !!");
-  };
+    } else {
+      if (!regexExpForPw.test(password)) {
+        toast.error(
+          "A password should have minimum six characters, at least one uppercase letter, one lowercase letter, one number and one special character"
+        );
+      }
 
+      if (!regexExpForEmail.test(email)) {
+        toast.error("Invalid Email !!");
+      }
+
+      if (password != reEnterPassword) {
+        toast.error("Password confirmation failed.");
+      }
+    }
+  };
   return (
     <div className="admLogFull">
+      <Toaster />
       <div className="adminLoginNavbar">
         <img
           src={logo}
@@ -65,6 +86,12 @@ const Register = () => {
 
       <div className="registerEmployeeMain">
         <img src={employeeLogo} className="registerIcon" alt="" />
+
+        <div className="passwordInstruction">
+          <strong>*</strong>A password should have minimum six characters, at
+          least one uppercase letter, one lowercase letter, one number and one
+          special character.
+        </div>
         <div className="register">
           <h1>Register a new Employee</h1>
           <input

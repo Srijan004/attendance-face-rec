@@ -1,191 +1,120 @@
-
-
 .admLogFull {
-    /* background-color: rgb(237, 138, 138); */
-    width: 1510px;
-    height: 725px;
-    display: flex;
-    flex-direction:column;
-    align-items: center;
-    justify-content: space-between;
+  width: 1510px;
+  height: 725px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .loginAdminMain {
-    width: 1510px;
-    height: 650px;
-    /* background-color: blue; */
-    display: flex;
-    flex-direction: column;
-    align-items: center; 
-
-
+  width: 1510px;
+  height: 650px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .adminProjectLogo {
-
-    margin: 20px;
-    border-radius: 20px;
-    width: 180px;
-    height: 60px;
-
+  margin: 20px;
+  border-radius: 20px;
+  width: 180px;
+  height: 60px;
 }
 
-.adminLoginNavbar{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    width: 1530px;
-    height: 80px;
-    background-color: black;
+.adminLoginNavbar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 1530px;
+  height: 80px;
+  background-color: black;
 }
 
-.adminLogoLogin{
-    width: 364px;
-    height: 254px;
+.adminLogoLogin {
+  width: 364px;
+  height: 254px;
 }
-
-/* 
-.login {
-    padding-top: 30px;
-    background-color: white;
-    width: 420px;
-    height: 350px; */
-    
-    
-    /* background: #fff; */
-    /* border: 1px solid #dddfe2;
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-
-} */
 
 .adminLogo {
-    margin: 0;
-    padding: 0;
-    width: 280px;
-    height: 100px;
-}
-/* input{
-    text-decoration: none;
-    border: none;
-} */
-
-.adminUsername{
-
-    padding: 10px;
-    text-decoration: none;
-    width: 250px;
-    height: 30px;
-    border-radius: 10px;
-/* background-color: rebeccapurple; */
+  margin: 0;
+  padding: 0;
+  width: 280px;
+  height: 100px;
 }
 
-
-.adminPassword{
-
-    padding: 10px;
-    width: 250px;
-    height: 30px;
-    border-radius: 10px;
-
-    background-color: rebeccapurple;
+.adminUsername {
+  padding: 10px;
+  text-decoration: none;
+  width: 250px;
+  height: 30px;
+  border-radius: 10px;
 }
-/* 
-.loginButton{
-    width: 200px;
-    height: 22px;
-    background-color: red;
-} */
 
-   
+.adminPassword {
+  padding: 10px;
+  width: 250px;
+  height: 30px;
+  border-radius: 10px;
+
+  background-color: rebeccapurple;
+}
 
 .login {
-    color: #00babe;
-    border: 2px solid black;
-    height: 240px;
-    width: 400px;
-    background: #fff;
-    /* border: 1px solid #dddfe2; */
-    box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
-    border-radius: 8px;
-    padding: 1rem;
-    align-items: center;
-    text-align: center;
+  color: #00babe;
+  border: 2px solid black;
+  height: 240px;
+  width: 400px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 10%), 0 8px 16px rgb(0 0 0 / 10%);
+  border-radius: 8px;
+  padding: 1rem;
+  align-items: center;
+  text-align: center;
 }
 
 .login > input {
-    border-radius: 8px;
-    border: 2px solid #dddfe2;
-    outline: none;
-    color: #1d2129;
-    margin: 0.5rem 0;
-    padding: 0.5rem 0.75rem;
-    width: 92%;
-    font-size: 1rem;
+  border-radius: 8px;
+  border: 2px solid #dddfe2;
+  outline: none;
+  color: #1d2129;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.75rem;
+  width: 92%;
+  font-size: 1rem;
 }
 
-.login >input[type=text]:focus {
-    border: 2px solid #00babe;
-
+.login > input[type="text"]:focus {
+  border: 2px solid #00babe;
 }
 
-.login >input[type=password]:focus {
-    border: 2px solid #00babe;
-
-}
-
-.login > .button {
-    background-color: #00babe;
-    color: white;
-    width: 380px;
-    /* background: #1877f2; */
-    border: 1px solid #1877f2;
-    /* color: #fff; */
-    font-size: 1.25rem;
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    border-radius: 8px;
-    outline: none;
-    cursor: pointer;
-}
-
-.login > .button:hover{
-    transition: 0.5s;
-    opacity: 0.8;
-}
-
-.login > .button:active{
-    opacity: 1;
-}
-
-.adminProjectLogo  {cursor: pointer;
-}
-
-
-/* .login > input {
-    border-radius: 8px;
-    border: 2px solid #dddfe2;
-    outline: none;
-    color: #1d2129;
-    margin: 0.5rem 0;
-    padding: 0.5rem 0.75rem;
-    width: 92%;
-    font-size: 1rem;
+.login > input[type="password"]:focus {
+  border: 2px solid #00babe;
 }
 
 .login > .button {
-    background: #1877f2;
-    border: 1px solid #1877f2;
-    color: #fff;
-    font-size: 1.25rem;
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    border-radius: 8px;
-    outline: none;
-    cursor: pointer;
-} */
+  background-color: #00babe;
+  color: white;
+  width: 380px;
+  border: 1px solid #1877f2;
+  font-size: 1.25rem;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+}
+
+.login > .button:hover {
+  transition: 0.5s;
+  opacity: 0.8;
+}
+
+.login > .button:active {
+  opacity: 1;
+}
+
+.adminProjectLogo {
+  cursor: pointer;
+}

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import Webcam from "react-webcam";
-import axios from "axios";
 import { useHistory } from "react-router-dom";
 import "./login.css";
 import logo from "../../images/newLogoSmall.PNG";
 import adminLogo from "../../images/adminLogoBig.jpg";
+import toast, { Toaster } from "react-hot-toast";
 
 const AdminLogin = () => {
   const history = useHistory();
@@ -20,8 +19,6 @@ const AdminLogin = () => {
       ...user,
       [name]: value,
     });
-
-    console.log(user);
   };
 
   const login = () => {
@@ -33,11 +30,9 @@ const AdminLogin = () => {
       body: JSON.stringify(user),
     }).then((res) =>
       res.json().then((data) => {
-        console.log("Huo getUser resp : ", data);
 
         if (data["login_successful"] == 0) {
-          alert("Not an admin !!");
-          window.location.reload();
+          toast.error("Not an admin !!");
         } else {
           const admin = {
             admin: 5,
@@ -53,6 +48,7 @@ const AdminLogin = () => {
 
   return (
     <div className="admLogFull">
+      <Toaster />
       <div className="adminLoginNavbar">
         <img
           src={logo}

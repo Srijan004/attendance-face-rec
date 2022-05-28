@@ -1,11 +1,7 @@
 import React from "react";
-import { useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Link } from "react-router-dom";
 import "./homepage.css";
-
 import BG from "../../images/newBGimg00.png";
-
 import employee from "../../images/employee.png";
 import admin from "../../images/admin.png";
 import addEmployee from "../../images/addEmployee.png";
@@ -19,8 +15,6 @@ const Homepage = () => {
       <div className="homepageRight">
         <div className="homePageRightUp">
           <div className="welcome">Welcome</div>
-
-          {/* <br /> */}
 
           <div className="intro">
             Mark Attendance using the

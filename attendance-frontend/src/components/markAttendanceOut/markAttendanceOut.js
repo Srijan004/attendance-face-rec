@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import axios from "axios";
 import Webcam from "react-webcam";
 import { useHistory } from "react-router-dom";
 import logo from "../../images/newLogoSmall.PNG";
-import Login from "../loginEmployee/login";
 import AccessDenied from "../AccessDenied/AccessDenied";
+import toast, { Toaster } from 'react-hot-toast';
 
 const MarkAttendanceOut = () => {
   const history = useHistory();
@@ -19,7 +18,6 @@ const MarkAttendanceOut = () => {
   const [name, setName] = useState("");
   const capture = React.useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
-    console.log(`imageSrc = ${imageSrc}`);
 
     fetch("/markAttendanceOut", {
       method: "POST",
@@ -32,22 +30,17 @@ const MarkAttendanceOut = () => {
       }),
     }).then((res) =>
       res.json().then((data) => {
-        console.log("Huo getUser resp : ", data);
 
         if (data["attendance_made"] == 0) {
-          alert("Please retry. Your attendance couldn't be made !!");
-          localStorage.setItem("MyUser", JSON.stringify({}));
-          history.push("/login");
+          toast.error("Please retry. Your attendance couldn't be made !!");
         }
 
         if (data["attendance_made"] == 2) {
-          alert("Mark your in attendance first. ");
+          toast.error("Mark your in attendance first. ");
         }
 
         if (data["attendance_made"] == 1) {
-          alert(
-            `Attendce made !! You have been identified with ${data["percent_accuracy"]}% accuracy`
-          );
+          toast.success(`Attendance made !! You have been identified with ${data['percent_accuracy']}% accuracy`);
         }
       })
     );
@@ -55,6 +48,7 @@ const MarkAttendanceOut = () => {
 
   return (
     <>
+    <Toaster/>
       {loginCheck && loginCheck.empno ? (
         <div className="webcamPageFull">
           <div className="adminLoginNavbar">

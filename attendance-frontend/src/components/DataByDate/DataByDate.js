@@ -1,8 +1,10 @@
 import DatePicker from "react-datepicker";
 import { useState, useEffect } from "react";
 import "./DataByDate.css";
+import toast, { Toaster } from "react-hot-toast";
+
 const DataByDate = () => {
-  var [dar, setdar] = useState([]);
+  var [table_content, setTableContent] = useState([]);
   const [chosenDate, setChosenDate] = useState(null);
 
   const bydate = () => {
@@ -13,23 +15,24 @@ const DataByDate = () => {
       },
     }).then((res) =>
       res.json().then((data) => {
-        var darx = [];
-        if(data['message']) {
-          alert(data['message']);
-          window.location.reload();
+        var tableContent_temp = [];
+        if (data["message"]) {
+          toast.error(data["message"]);
+          return;
         }
 
-        var dateUc = getFormattedDate(chosenDate);
+        var date_under_consideration = getFormattedDate(chosenDate);
 
-        console.log("hash data from flask : ", data);
-        let arx = Object.keys(data);
-        for (var x = 0; x < arx.length; x++) {
-          console.log(arx[x]);
-          if (data[arx[x]][dateUc]) darx.push([arx[x], data[arx[x]][dateUc]]);
+        let array_of_dates = Object.keys(data);
+        for (var x = 0; x < array_of_dates.length; x++) {
+          if (data[array_of_dates[x]][date_under_consideration])
+            tableContent_temp.push([
+              array_of_dates[x],
+              data[array_of_dates[x]][date_under_consideration],
+            ]);
         }
 
-        console.log("dar value :", darx);
-        setdar(darx);
+        setTableContent(tableContent_temp);
       })
     );
   };
@@ -47,6 +50,7 @@ const DataByDate = () => {
   }
   return (
     <>
+      <Toaster />
       <h2 className="dataByDateHead">
         Choose a Date to get the attendees and their details of a particular
         date
@@ -66,11 +70,11 @@ const DataByDate = () => {
         </button>
       </div>
 
-      {dar && dar.length == 0 && (
+      {table_content && table_content.length == 0 && (
         <div className="noData">No data available for this date</div>
       )}
 
-      {chosenDate && dar.length ? (
+      {chosenDate && table_content.length ? (
         <div>
           <table className="marginBottom">
             <tr>
@@ -80,7 +84,7 @@ const DataByDate = () => {
               <th>Duration</th>
             </tr>
 
-            {dar.map((row) => (
+            {table_content.map((row) => (
               <>
                 <tr>
                   <td> {row[0]} </td>

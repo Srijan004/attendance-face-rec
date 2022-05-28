@@ -1,16 +1,8 @@
-/*
-.loginAdminMain
-    background-color: #ccc3;
-
-*/
-
 .loginEmployeeMain {
     width: 1510px;
     height: 650px;
-    /* background-color: #ccc3; */
     background-color: #c6c2c224;
     display: flex;
     flex-direction: column;
     align-items: center; 
-
 }
