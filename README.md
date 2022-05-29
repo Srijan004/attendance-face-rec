@@ -34,3 +34,10 @@
 - ReactJS with CSS for frontend.
 - Flask, opencv, and face_recognition modules of python for backend.
 - SQLite for Database and flask_sqlalchemy module of python for handling create-read-update queries.  
+
+> ## Developed by 
+- Name : Srijan Kumar
+- Email : srijanrathor8@gmail.com
+- College : Birla Institute of Technology, Mesra
+- Discipline : Computer Science and Engineering (B.Tech.)
+- Graduation : 2024
