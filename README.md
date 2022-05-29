@@ -22,6 +22,7 @@
 > ## Special Instructions to run the Web-Application
 1. The username for logging-in as admin is admin, and the password is admin123 (case sensitive). 
 2. The employee number for registration must be unique every time a new employee registers. 
+3. The frontend runs on localhost:3000 and backend runs on localhost:5000. 
 
 > ## Features
 1. Register a new employee and click his/her registration image.
