@@ -30,17 +30,13 @@ def face_identification(unknown_image,employee_number) :
     for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
 
         matches = face_recognition.compare_faces(encodeListKnown, face_encoding)
-        print("matches ->",matches)
         face_distances = face_recognition.face_distance(encodeListKnown, face_encoding)
-        print("face-distances ->",face_distances)
         best_match_index = np.argmin(face_distances)
-        print("best match index -> ",best_match_index)
             
         if matches[best_match_index]:
             resp = classNames[best_match_index]
             percent_accuracy = face_distance_to_conf(face_distances[best_match_index])*100
-            print("percemt accuracy -> ",percent_accuracy)
-
+        
     if(employee_number == resp) :
         return {'face_match':'1','percent_accuracy':round(percent_accuracy,3)}
     else :
@@ -494,7 +490,6 @@ def markAttendanceOut():
         
 
         if(face_identification(unknown_image,empIden)['percent_accuracy'] < 93.5):
-                    print(percent_accuracy)
                     return(jsonify({'attendance_made':'0'}))
 
 
