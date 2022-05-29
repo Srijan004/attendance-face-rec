@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="300px"src="attendance-frontend/src/images/homepage_screenshot.PNG" />
+  <img height="300px"src="attendance-frontend/src/images/homepage_ss.PNG" />
 </p>
 <hr />
 
