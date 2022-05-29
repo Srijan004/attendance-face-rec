@@ -17,6 +17,7 @@
 - server
 ```sh
    cd attendance-backend
+   mkdir Training_images
    pip install -r requirements.txt 
    python app.py
 ```
