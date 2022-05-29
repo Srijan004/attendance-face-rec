@@ -19,7 +19,7 @@
    pip install -r requirements.txt 
    python app.py
 ```
-## Special Instructions to run the Web-Application
+> ## Special Instructions to run the Web-Application
 1. The username for logging-in as admin is admin, and the password is admin123 (case sensitive). 
 2. The employee number for registration must be unique every time a new employee registers. 
 
