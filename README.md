@@ -5,7 +5,8 @@
 
 > ## Documentation
 - [Demo video](https://www.youtube.com/watch?v=vMN3TqF4mh0)
-- [Project Documentation] (https://drive.google.com/file/d/11-Gpa0EchzVZUVbFB80fiSV7221bl4R2/view?usp=sharing)
+- [Project Documentation](https://drive.google.com/file/d/11-Gpa0EchzVZUVbFB80fiSV7221bl4R2/view?usp=sharing)
+
 > ## Local Setup
 - client
 ```sh
