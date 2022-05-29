@@ -7,7 +7,7 @@
 - [Demo video](https://www.youtube.com/watch?v=vMN3TqF4mh0)
 
 > ## Tech Stack 
-- ReactJS with CSS for frontend. 
+- ReactJS with CSS for frontend.
 - Flask, opencv, and face_recognition modules of python for backend.
 
 > ## Features
